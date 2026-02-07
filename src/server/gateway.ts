@@ -15,7 +15,6 @@ const logger = pino({
 
 async function main(): Promise<void> {
   const fastify = Fastify({
-    logger: true,
     loggerInstance: logger,
   });
 
