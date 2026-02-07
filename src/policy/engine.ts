@@ -84,33 +84,18 @@ export class PolicyEngine {
     const checks: PolicyCheck[] = [];
 
     // 1. Contract allowlist
-    checks.push(
-      checkContractAllowlist(request.to, request.chainId, this.config.allowlists)
-    );
+    checks.push(checkContractAllowlist(request.to, request.chainId, this.config.allowlists));
 
     // 2. Method allowlist (based on action type)
-    checks.push(
-      checkMethodAllowlist(request.action.action, this.config.allowlists)
-    );
+    checks.push(checkMethodAllowlist(request.action.action, this.config.allowlists));
 
     // 3. Spend cap
     checks.push(
-      checkSpendCap(
-        request.agentId,
-        BigInt(request.value),
-        this.config.limits,
-        this.limitState
-      )
+      checkSpendCap(request.agentId, BigInt(request.value), this.config.limits, this.limitState)
     );
 
     // 4. Velocity limit
-    checks.push(
-      checkVelocityLimit(
-        request.agentId,
-        this.config.limits,
-        this.limitState
-      )
-    );
+    checks.push(checkVelocityLimit(request.agentId, this.config.limits, this.limitState));
 
     // 5. Expiry validation
     checks.push(this.checkExpiry(request));

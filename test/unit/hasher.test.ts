@@ -82,7 +82,10 @@ describe('canonicalizeSorted', () => {
   });
 
   it('handles objects in arrays', () => {
-    const arr = [{ z: 1, a: 2 }, { y: 3, b: 4 }];
+    const arr = [
+      { z: 1, a: 2 },
+      { y: 3, b: 4 },
+    ];
     const result = canonicalizeSorted(arr);
     expect(result).toBe('[{"a":2,"z":1},{"b":4,"y":3}]');
   });

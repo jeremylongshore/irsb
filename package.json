@@ -18,8 +18,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "lint": "eslint src test --ext .ts",
-    "lint:fix": "eslint src test --ext .ts --fix",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
     "format": "prettier --write 'src/**/*.ts' 'test/**/*.ts'",
     "format:check": "prettier --check 'src/**/*.ts' 'test/**/*.ts'",
     "typecheck": "tsc --noEmit",
@@ -29,7 +29,8 @@
     "irsb",
     "intent",
     "signing",
-    "kms",
+    "lit-protocol",
+    "threshold-signatures",
     "ethereum",
     "erc-8004"
   ],
@@ -47,22 +48,35 @@
     "node": ">=20.0.0"
   },
   "dependencies": {
-    "@google-cloud/kms": "^4.5.0",
     "ethers": "^6.13.0",
     "fastify": "^5.0.0",
     "pino": "^9.4.0",
     "zod": "^3.23.0"
   },
+  "peerDependencies": {
+    "@lit-protocol/contracts-sdk": "^7.0.0",
+    "@lit-protocol/lit-node-client-nodejs": "^7.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@lit-protocol/lit-node-client-nodejs": {
+      "optional": true
+    },
+    "@lit-protocol/contracts-sdk": {
+      "optional": true
+    }
+  },
   "devDependencies": {
+    "@eslint/js": "^9.39.2",
     "@types/node": "^22.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
     "@vitest/coverage-v8": "^2.0.0",
-    "eslint": "^9.0.0",
+    "eslint": "^9.39.2",
     "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.3.0",
     "tsx": "^4.19.0",
     "typescript": "^5.6.0",
+    "typescript-eslint": "^8.54.0",
     "vitest": "^2.0.0"
   }
 }

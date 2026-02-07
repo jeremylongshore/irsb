@@ -83,10 +83,7 @@ export function hashArtifact(artifact: AuditArtifact): string {
 /**
  * Verify an audit artifact's internal consistency
  */
-export function verifyArtifact(
-  artifact: AuditArtifact,
-  originalRequest?: SigningRequest
-): boolean {
+export function verifyArtifact(artifact: AuditArtifact, originalRequest?: SigningRequest): boolean {
   // Verify signing request hash if we have the original
   if (originalRequest) {
     const expectedHash = hashCanonical(originalRequest);

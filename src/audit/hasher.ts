@@ -69,10 +69,7 @@ export function hashCanonical(value: unknown): string {
 /**
  * Compute hash of a subset of object properties
  */
-export function hashProperties<T extends object>(
-  obj: T,
-  properties: (keyof T)[]
-): string {
+export function hashProperties<T extends object>(obj: T, properties: (keyof T)[]): string {
   const subset: Partial<T> = {};
   for (const prop of properties) {
     if (obj[prop] !== undefined) {

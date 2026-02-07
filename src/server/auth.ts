@@ -4,7 +4,7 @@
  * Validates incoming requests using JWT or workload identity.
  */
 
-import type { FastifyRequest, FastifyReply } from 'fastify';
+import type { FastifyRequest } from 'fastify';
 import pino from 'pino';
 
 const logger = pino({ name: 'auth' });

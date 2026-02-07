@@ -1,16 +1,29 @@
 # IRSB Agent Passkey
 
-Policy-gated signing gateway for [IRSB Protocol](https://github.com/intent-solutions-io/irsb-protocol). Non-extractable KMS-backed keys with typed action enforcement.
+Policy-gated signing gateway for [IRSB Protocol](https://github.com/intent-solutions-io/irsb-protocol). Threshold signatures via Lit Protocol - no single point of key compromise.
+
+> **Status**: MVP implementation complete. Policy engine, audit artifacts, and typed actions are fully functional. Lit Protocol integration is wired up with the SDK - requires PKP credentials for signing.
 
 ## Overview
 
 IRSB Agent Passkey is the **Identity Plane** for IRSB Protocol agents (solvers, watchtowers). It provides:
 
-- **Non-extractable Keys**: Private keys never leave GCP Cloud KMS
+- **Threshold Signatures**: PKP keys distributed across Lit Protocol's TEE nodes
+- **No Single Point of Compromise**: 2/3 of nodes must agree to sign
 - **Typed Actions Only**: No "sign arbitrary digest" API - only IRSB state transitions
 - **Policy Enforcement**: Contract allowlists, spend caps, rate limits
 - **Deterministic Audit**: Every decision produces verifiable artifacts
-- **Session Capabilities**: Short-lived, scoped tokens for agent operations
+- **Crypto-Native**: Decentralized infrastructure, not cloud vendor lock-in
+
+## Why Lit Protocol?
+
+| Feature | Cloud KMS | Lit Protocol |
+|---------|-----------|--------------|
+| Key custody | Single cloud provider | Distributed across TEE nodes |
+| Trust model | Trust Google/AWS/Azure | Threshold (2/3 nodes) |
+| Failure mode | Cloud outage = offline | Degraded but functional |
+| Crypto credibility | "Enterprise" | Native |
+| Programmable | Limited | Lit Actions (JavaScript) |
 
 ## Architecture
 
@@ -30,7 +43,15 @@ IRSB Agent Passkey is the **Identity Plane** for IRSB Protocol agents (solvers, 
                       ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │  IRSB Agent Passkey (This Service)                              │
-│  - KMS signing, policy engine, session capabilities             │
+│  - Lit Protocol signing, policy engine, session capabilities    │
+└─────────────────────────────────────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  Lit Protocol Network                                           │
+│  - PKP (Programmable Key Pairs)                                 │
+│  - Threshold signatures (2/3 nodes)                             │
+│  - TEE execution environment                                    │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -78,11 +99,22 @@ Environment variables:
 |----------|-------------|---------|
 | `PORT` | Server port | `8080` |
 | `LOG_LEVEL` | Logging level | `info` |
-| `KMS_PROJECT_ID` | GCP project for KMS | Required |
-| `KMS_LOCATION` | KMS key location | Required |
-| `KMS_KEY_RING` | KMS key ring name | Required |
-| `KMS_KEY_NAME` | KMS key name | Required |
+| `LIT_NETWORK` | Lit network (datil-dev/datil-test/datil) | `datil-dev` |
+| `LIT_AUTH_PRIVATE_KEY` | Controller wallet private key (see security note) | Required |
+| `LIT_PKP_PUBLIC_KEY` | PKP public key (required for signing; omit to mint new) | - |
+| `LIT_SESSION_EXPIRY` | Session TTL in seconds (max 86400) | `3600` |
 | `ERC8004_ENABLED` | Enable ERC-8004 integration | `false` |
+
+### Security Notes
+
+**`LIT_AUTH_PRIVATE_KEY`**: This is sensitive cryptographic material. Best practices:
+- Use secret management (GCP Secret Manager, AWS Secrets Manager, HashiCorp Vault)
+- Never commit to version control
+- Use separate keys for dev/staging/prod
+- Rotate keys periodically
+- Consider using hardware security modules (HSM) for production
+
+**`LIT_PKP_PUBLIC_KEY`**: The uncompressed public key of your PKP (starts with `0x04`). If omitted, the service cannot sign until a PKP is minted and configured.
 
 ## API
 
@@ -110,7 +142,15 @@ Sign an IRSB action.
 
 ### GET /v1/address
 
-Get the signer's Ethereum address.
+Get the signer's Ethereum address (PKP address).
+
+```json
+{
+  "address": "0x...",
+  "enabled": true,
+  "backend": "lit-protocol"
+}
+```
 
 ### GET /health
 
@@ -131,10 +171,30 @@ Before signing, every request is checked against:
 
 ## Security
 
-- Keys are stored in GCP Cloud KMS (HSM-backed)
-- All signing decisions are logged with deterministic hashes
+- Keys are distributed across Lit Protocol's TEE nodes
+- 2/3 threshold required for any signature
+- All signing decisions logged with deterministic hashes
 - Session capabilities have max 24-hour TTL
 - Rate limiting prevents abuse
+
+## Lit Protocol Networks
+
+> **Deprecation Notice**: Datil (V0) networks are being sunset on **February 25, 2026**.
+> Plan migration to Habanero (testnet) or Manzano (mainnet) networks.
+> See: https://developer.litprotocol.com/network/migration
+
+| Network | Use Case | Chain | Status |
+|---------|----------|-------|--------|
+| `datil-dev` | Development | Chronicle Yellowstone | Deprecated Feb 2026 |
+| `datil-test` | Staging | Chronicle Yellowstone | Deprecated Feb 2026 |
+| `datil` | Production | Chronicle Mainnet | Deprecated Feb 2026 |
+
+### Future Networks (V1)
+
+| Network | Use Case | Status |
+|---------|----------|--------|
+| `habanero` | Testnet | Coming soon |
+| `manzano` | Mainnet | Coming soon |
 
 ## License
 

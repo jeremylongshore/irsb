@@ -61,7 +61,10 @@ export const SigningRequestSchema = z.object({
   /**
    * Value in wei (usually 0 for IRSB actions)
    */
-  value: z.string().regex(/^[0-9]+$/, 'Must be numeric string').default('0'),
+  value: z
+    .string()
+    .regex(/^[0-9]+$/, 'Must be numeric string')
+    .default('0'),
 
   /**
    * Request expiry timestamp (unix ms)

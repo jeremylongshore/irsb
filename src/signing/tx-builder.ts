@@ -6,9 +6,9 @@
  */
 
 import { Transaction, keccak256, Interface } from 'ethers';
-import type { KmsSigner } from './kms-signer.js';
+import type { Signer } from './signer.js';
 import type { IrsbAction } from '../types/actions.js';
-import { toEip155Signature, serializeSignature } from './der-to-rsv.js';
+import { toEip155Signature } from './der-to-rsv.js';
 import pino from 'pino';
 
 const logger = pino({ name: 'tx-builder' });
@@ -122,7 +122,7 @@ export class TxBuilder {
    * Build and sign a transaction for an IRSB action
    */
   async buildTransaction(
-    signer: KmsSigner,
+    signer: Signer,
     action: IrsbAction,
     config: TxConfig,
     requestId: string

@@ -5,14 +5,12 @@
  * We need to convert to Ethereum's (r, s, v) format.
  */
 
-import { Signature, keccak256, recoverAddress } from 'ethers';
+import { Signature, recoverAddress } from 'ethers';
 
 /**
  * secp256k1 curve order
  */
-const SECP256K1_N = BigInt(
-  '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141'
-);
+const SECP256K1_N = BigInt('0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141');
 
 /**
  * Half of the curve order (for EIP-2 low-s normalization)
@@ -187,7 +185,12 @@ function hexToBytes(hex: string): Uint8Array {
 }
 
 function bytesToHex(bytes: Uint8Array): string {
-  return '0x' + Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+  return (
+    '0x' +
+    Array.from(bytes)
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('')
+  );
 }
 
 function bytesToBigInt(bytes: Uint8Array): bigint {

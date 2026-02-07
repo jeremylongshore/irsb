@@ -5,123 +5,108 @@
  */
 
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { z } from 'zod';
-import { PolicyEngine, createDefaultPolicyConfig } from '../policy/engine.js';
-import { createAuditArtifact, hashArtifact } from '../audit/artifact.js';
 import {
   SigningRequestSchema,
-  type SigningRequest,
   type SigningResponse,
   type SigningError,
 } from '../types/signing-request.js';
-import { addToContractAllowlist } from '../policy/allowlists.js';
+import { SigningService, createServiceFromEnv } from './service.js';
 
-// Initialize policy engine with default config
-const policyConfig = createDefaultPolicyConfig();
+// Lazy-initialize service to ensure env vars are loaded
+let _service: SigningService | null = null;
 
-// Add default IRSB contracts (would come from config in production)
-addToContractAllowlist(
-  policyConfig.allowlists,
-  '0x0000000000000000000000000000000000000000', // Placeholder
-  1, // Mainnet
-  'IRSB Protocol'
-);
-
-const policyEngine = new PolicyEngine(policyConfig);
+function getService(): SigningService {
+  if (!_service) {
+    _service = createServiceFromEnv();
+  }
+  return _service;
+}
 
 export async function routes(fastify: FastifyInstance): Promise<void> {
+  // Initialize service on first request
+  const service = getService();
   /**
    * Sign a request
    */
-  fastify.post('/v1/sign', async (
-    request: FastifyRequest,
-    reply: FastifyReply
-  ): Promise<SigningResponse | SigningError> => {
-    try {
-      // Parse and validate request
-      const parseResult = SigningRequestSchema.safeParse(request.body);
+  fastify.post(
+    '/v1/sign',
+    async (
+      request: FastifyRequest,
+      reply: FastifyReply
+    ): Promise<SigningResponse | SigningError> => {
+      try {
+        // Parse and validate request
+        const parseResult = SigningRequestSchema.safeParse(request.body);
 
-      if (!parseResult.success) {
-        reply.code(400);
+        if (!parseResult.success) {
+          reply.code(400);
+          return {
+            code: 'INVALID_REQUEST',
+            message: 'Request validation failed',
+            details: { errors: parseResult.error.errors },
+          };
+        }
+
+        const signingRequest = parseResult.data;
+
+        // Process signing request
+        const outcome = await service.sign(signingRequest);
+
+        if (outcome.success) {
+          return outcome.response;
+        } else {
+          // Map error code to HTTP status
+          const statusMap: Record<string, number> = {
+            INVALID_REQUEST: 400,
+            UNAUTHORIZED: 401,
+            POLICY_DENIED: 403,
+            EXPIRED: 400,
+            DUPLICATE: 409,
+            RATE_LIMITED: 429,
+            INTERNAL_ERROR: 500,
+          };
+
+          reply.code(statusMap[outcome.error.code] ?? 500);
+          return outcome.error;
+        }
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        fastify.log.error({ error }, 'Signing request failed');
+
+        reply.code(500);
         return {
-          code: 'INVALID_REQUEST',
-          message: 'Request validation failed',
-          details: { errors: parseResult.error.errors },
+          code: 'INTERNAL_ERROR',
+          message,
         };
       }
-
-      const signingRequest = parseResult.data;
-
-      // Run policy checks
-      const policyResult = await policyEngine.check(signingRequest);
-
-      // Create audit artifact
-      const artifact = createAuditArtifact({
-        request: signingRequest,
-        policyVersion: policyEngine.version,
-        checks: policyResult.checks,
-        decision: policyResult.decision,
-      });
-
-      // Log the decision
-      fastify.log.info({
-        auditId: artifact.auditId,
-        requestId: signingRequest.requestId,
-        agentId: signingRequest.agentId,
-        action: signingRequest.action.action,
-        decision: policyResult.decision,
-      }, 'Signing request processed');
-
-      if (policyResult.decision === 'DENY') {
-        reply.code(403);
-        return {
-          requestId: signingRequest.requestId,
-          code: 'POLICY_DENIED',
-          message: 'Request denied by policy',
-          details: {
-            checks: policyResult.checks.filter((c) => !c.passed),
-          },
-          auditId: artifact.auditId,
-        };
-      }
-
-      // TODO: Actually sign the transaction with KMS
-      // For now, return a stub response
-      reply.code(501);
-      return {
-        requestId: signingRequest.requestId,
-        code: 'INTERNAL_ERROR',
-        message: 'Signing not yet implemented',
-        auditId: artifact.auditId,
-      };
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown error';
-      fastify.log.error({ error }, 'Signing request failed');
-
-      reply.code(500);
-      return {
-        code: 'INTERNAL_ERROR',
-        message,
-      };
     }
-  });
+  );
 
   /**
    * Get policy configuration (read-only)
    */
   fastify.get('/v1/policy', async (): Promise<{ version: string }> => {
     return {
-      version: policyEngine.version,
+      version: service.getPolicyVersion(),
     };
   });
 
   /**
-   * Get signing address
+   * Get signing address and backend info
    */
-  fastify.get('/v1/address', async (): Promise<{ address: string }> => {
-    // TODO: Get from KMS signer
-    return {
-      address: '0x0000000000000000000000000000000000000000',
-    };
-  });
+  fastify.get(
+    '/v1/address',
+    async (): Promise<{
+      address: string | null;
+      enabled: boolean;
+      backend: string;
+    }> => {
+      const address = await service.getAddress();
+      return {
+        address,
+        enabled: service.isSigningEnabled(),
+        backend: service.getSignerType(),
+      };
+    }
+  );
 }

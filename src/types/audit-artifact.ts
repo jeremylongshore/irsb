@@ -68,12 +68,18 @@ export const AuditArtifactSchema = z.object({
   /**
    * Hash of the signature (if allowed)
    */
-  signatureHash: z.string().regex(/^0x[a-fA-F0-9]{64}$/).optional(),
+  signatureHash: z
+    .string()
+    .regex(/^0x[a-fA-F0-9]{64}$/)
+    .optional(),
 
   /**
    * Transaction hash (if submitted)
    */
-  txHash: z.string().regex(/^0x[a-fA-F0-9]{64}$/).optional(),
+  txHash: z
+    .string()
+    .regex(/^0x[a-fA-F0-9]{64}$/)
+    .optional(),
 
   /**
    * Timestamp (unix ms)
@@ -101,8 +107,14 @@ export const AuditArtifactMinimalSchema = z.object({
   signingRequestHash: z.string().regex(/^0x[a-fA-F0-9]{64}$/),
   policyDecisionHash: z.string().regex(/^0x[a-fA-F0-9]{64}$/),
   decision: PolicyDecisionSchema,
-  signatureHash: z.string().regex(/^0x[a-fA-F0-9]{64}$/).optional(),
-  txHash: z.string().regex(/^0x[a-fA-F0-9]{64}$/).optional(),
+  signatureHash: z
+    .string()
+    .regex(/^0x[a-fA-F0-9]{64}$/)
+    .optional(),
+  txHash: z
+    .string()
+    .regex(/^0x[a-fA-F0-9]{64}$/)
+    .optional(),
   timestamp: z.number().int().positive(),
 });
 

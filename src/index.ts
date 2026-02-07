@@ -2,7 +2,7 @@
  * IRSB Agent Passkey - Policy-Gated Signing Gateway
  *
  * Identity plane for IRSB Protocol agents (solvers, watchtowers).
- * Non-extractable KMS-backed keys with typed action enforcement.
+ * Threshold signatures via Lit Protocol - no single point of key compromise.
  *
  * @packageDocumentation
  */
@@ -24,7 +24,8 @@ export type { AuditArtifact, PolicyDecision } from './types/audit-artifact.js';
 export { PolicyEngine, type PolicyConfig, type PolicyCheckResult } from './policy/engine.js';
 
 // Signing
-export { KmsSigner } from './signing/kms-signer.js';
+export type { Signer, EthSignature } from './signing/signer.js';
+export { LitSigner, type LitSignerConfig, type LitNetwork } from './signing/lit-signer.js';
 export { derToRsv, normalizeS } from './signing/der-to-rsv.js';
 export { TxBuilder } from './signing/tx-builder.js';
 
@@ -41,3 +42,11 @@ export { canonicalize } from './audit/hasher.js';
 
 // ERC-8004
 export { ERC8004Adapter, type ValidationSignal, type ReputationUpdate } from './erc8004/adapter.js';
+
+// Service
+export {
+  SigningService,
+  createServiceFromEnv,
+  type ServiceConfig,
+  type SigningOutcome,
+} from './server/service.js';

@@ -3,17 +3,10 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import {
-  parseDer,
-  normalizeS,
-  isLowS,
-  derToRsv,
-} from '../../src/signing/der-to-rsv.js';
+import { parseDer, normalizeS, isLowS, derToRsv } from '../../src/signing/der-to-rsv.js';
 
 // secp256k1 curve order
-const SECP256K1_N = BigInt(
-  '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141'
-);
+const SECP256K1_N = BigInt('0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141');
 
 describe('parseDer', () => {
   it('parses valid DER signature', () => {
@@ -21,9 +14,11 @@ describe('parseDer', () => {
     const der =
       '0x3044' + // SEQUENCE, 68 bytes
       '0220' + // INTEGER, 32 bytes
-      '00' + 'a'.repeat(62) + // r (with leading zero for positive)
+      '00' +
+      'a'.repeat(62) + // r (with leading zero for positive)
       '0220' + // INTEGER, 32 bytes
-      '00' + 'b'.repeat(62); // s (with leading zero for positive)
+      '00' +
+      'b'.repeat(62); // s (with leading zero for positive)
 
     const { r, s } = parseDer(der);
 
@@ -38,9 +33,11 @@ describe('parseDer', () => {
     const der =
       '0x3042' + // SEQUENCE, 66 bytes
       '021f' + // INTEGER, 31 bytes
-      '7' + 'a'.repeat(61) + // r (no leading zero, high bit not set)
+      '7' +
+      'a'.repeat(61) + // r (no leading zero, high bit not set)
       '021f' + // INTEGER, 31 bytes
-      '7' + 'b'.repeat(61); // s
+      '7' +
+      'b'.repeat(61); // s
 
     const { r, s } = parseDer(der);
 
@@ -98,17 +95,13 @@ describe('derToRsv', () => {
   it('produces valid Ethereum signature format', () => {
     // This is a more complex test that would require real signature data
     // For now, we'll test the format expectations
-
     // Skip if we can't create a valid test case
     // In practice, you'd use a known test vector here
   });
 
   it('throws when recovery fails', () => {
     // Create a DER that parses but won't match any expected address
-    const der =
-      '0x3044' +
-      '0220' + '00' + 'a'.repeat(62) +
-      '0220' + '00' + 'b'.repeat(62);
+    const der = '0x3044' + '0220' + '00' + 'a'.repeat(62) + '0220' + '00' + 'b'.repeat(62);
 
     const messageHash = '0x' + 'c'.repeat(64);
     const expectedAddress = '0x' + 'd'.repeat(40);
