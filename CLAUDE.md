@@ -4,9 +4,28 @@ This file provides guidance to Claude Code when working with the IRSB Agent Pass
 
 ## Project Overview
 
-**IRSB Agent Passkey** is the identity plane for IRSB Protocol agents. It provides policy-gated signing using GCP Cloud KMS with non-extractable keys.
+**IRSB Agent Passkey** is the identity plane for IRSB Protocol agents. It provides policy-gated signing using **Lit Protocol PKP** (Programmable Key Pairs) with threshold signatures across decentralized TEE nodes.
 
 **Key principle:** Agents submit typed IRSB actions, not raw digests. The signer enforces policy, builds transactions, manages nonces, and produces audit artifacts.
+
+## Deployment
+
+| Environment | URL | Status |
+|-------------|-----|--------|
+| Production | https://irsb-agent-passkey-308207955734.us-central1.run.app | ✅ Live |
+| Health | `/health` | `{"status":"ok"}` |
+| Ready | `/ready` | `{"ready":true}` |
+
+**GCP Project:** `irsb-protocol`
+**Cloud Run Region:** `us-central1`
+**GitHub:** https://github.com/intent-solutions-io/irsb-agent-passkey
+
+## Signing Architecture
+
+Uses **Lit Protocol** for non-extractable threshold signatures:
+- PKP keys live in 2/3 TEE nodes (no single point of compromise)
+- Session signatures for scoped, time-limited access
+- Network: `datil-dev` (⚠️ migrating to Habanero before Feb 2026 deprecation)
 
 ## Quick Commands
 
@@ -42,7 +61,7 @@ src/
 │   ├── limits.ts            # Spend caps, rate limits
 │   └── state-validator.ts   # On-chain state checks
 ├── signing/
-│   ├── kms-signer.ts        # GCP KMS integration
+│   ├── lit-signer.ts        # Lit Protocol PKP integration
 │   ├── der-to-rsv.ts        # DER → (r,s,v) conversion
 │   └── tx-builder.ts        # Nonce management, tx construction
 ├── sessions/
@@ -92,7 +111,8 @@ Key test files:
 ## Dependencies
 
 Core:
-- `@google-cloud/kms` - GCP KMS for signing
+- `@lit-protocol/lit-node-client` - Lit Protocol SDK
+- `@lit-protocol/auth-helpers` - Session signature helpers
 - `ethers` - Ethereum utilities
 - `fastify` - HTTP server
 - `zod` - Schema validation
@@ -105,11 +125,13 @@ Core:
 PORT=8080
 LOG_LEVEL=info
 
-# KMS (required for signing)
-KMS_PROJECT_ID=your-project
-KMS_LOCATION=us-central1
-KMS_KEY_RING=irsb
-KMS_KEY_NAME=agent-signer
+# Lit Protocol (required for signing)
+LIT_NETWORK=datil-dev              # datil-dev | datil-test | habanero | manzano
+LIT_AUTH_PRIVATE_KEY=0x...         # Auth wallet for session signatures
+LIT_PKP_PUBLIC_KEY=0x04...         # PKP public key (uncompressed)
+
+# Capabilities (stored in Secret Manager)
+CAPABILITY_SECRET=...              # Shared secret for capability signing
 
 # Auth
 AUTH_AUDIENCE=irsb-agent-passkey
@@ -119,6 +141,13 @@ AUTH_SKIP=false  # true for local dev
 # ERC-8004 (optional)
 ERC8004_ENABLED=false
 ```
+
+## Secrets (Google Secret Manager)
+
+Sensitive values stored in Secret Manager and injected at runtime:
+- `lit-auth-private-key` - Auth wallet private key
+- `lit-pkp-public-key` - PKP public key
+- `capability-secret` - Session capability signing secret
 
 ## Related Projects
 
@@ -133,6 +162,24 @@ This is part of the IRSB ecosystem:
 |------|---------|
 | `src/types/actions.ts:1` | IRSB action definitions |
 | `src/policy/engine.ts:1` | Policy engine orchestrator |
-| `src/signing/kms-signer.ts:1` | GCP KMS integration |
+| `src/signing/lit-signer.ts:1` | Lit Protocol PKP integration |
 | `src/signing/der-to-rsv.ts:1` | DER signature conversion |
 | `src/server/routes.ts:1` | API endpoints |
+| `src/server/gateway.ts:1` | Fastify server entrypoint |
+
+## CI/CD
+
+Push to `main` triggers automatic deployment via GitHub Actions:
+- **Workflow:** `.github/workflows/deploy.yml`
+- **Auth:** Workload Identity Federation (keyless)
+- **Registry:** `us-central1-docker.pkg.dev/irsb-protocol/irsb-containers`
+- **Guardrails:** `max-instances=3` to prevent runaway scaling
+
+## Lit Network Migration
+
+⚠️ **Datil networks deprecated Feb 25, 2026**
+
+Migration path:
+1. Update `LIT_NETWORK` to `habanero` (mainnet) or `manzano` (testnet)
+2. Test session signature flow
+3. Update PKP if needed (may require new PKP on production network)
