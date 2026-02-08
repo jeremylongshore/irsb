@@ -1,5 +1,7 @@
 # CLAUDE.md
 
+> **AI Context**: For ecosystem-wide reference (contracts, deployments, concepts, glossary), see [../AI-CONTEXT.md](../AI-CONTEXT.md)
+
 This file provides guidance to Claude Code when working with the IRSB Agent Passkey codebase.
 
 ## Project Overview
@@ -25,7 +27,7 @@ This file provides guidance to Claude Code when working with the IRSB Agent Pass
 Uses **Lit Protocol** for non-extractable threshold signatures:
 - PKP keys live in 2/3 TEE nodes (no single point of compromise)
 - Session signatures for scoped, time-limited access
-- Network: `datil-dev` (⚠️ migrating to Habanero before Feb 2026 deprecation)
+- Network: `naga-dev` (migrated from Datil V0; Datil shutdown Feb 25, 2026)
 
 ## Quick Commands
 
@@ -126,7 +128,7 @@ PORT=8080
 LOG_LEVEL=info
 
 # Lit Protocol (required for signing)
-LIT_NETWORK=datil-dev              # datil-dev | datil-test | habanero | manzano
+LIT_NETWORK=naga-dev               # naga-dev | naga-test | naga (datil-* deprecated)
 LIT_AUTH_PRIVATE_KEY=0x...         # Auth wallet for session signatures
 LIT_PKP_PUBLIC_KEY=0x04...         # PKP public key (uncompressed)
 
@@ -179,7 +181,8 @@ Push to `main` triggers automatic deployment via GitHub Actions:
 
 ⚠️ **Datil networks deprecated Feb 25, 2026**
 
-Migration path:
-1. Update `LIT_NETWORK` to `habanero` (mainnet) or `manzano` (testnet)
-2. Test session signature flow
-3. Update PKP if needed (may require new PKP on production network)
+Migration path (Datil → Naga):
+1. SDK upgraded from v7 to v8 (`@lit-protocol/*`)
+2. `LIT_NETWORK` changed from `datil-dev` to `naga-dev`
+3. PKP must be re-minted on Naga (addresses change between networks)
+4. Network options: `naga-dev` (dev), `naga-test` (testnet), `naga` (mainnet)

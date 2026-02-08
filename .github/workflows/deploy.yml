@@ -61,7 +61,7 @@ jobs:
             --min-instances=0 \
             --max-instances=3 \
             --set-secrets="LIT_AUTH_PRIVATE_KEY=lit-auth-private-key:latest,LIT_PKP_PUBLIC_KEY=lit-pkp-public-key:latest,CAPABILITY_SECRET=capability-secret:latest" \
-            --set-env-vars="NODE_ENV=production,LIT_NETWORK=datil-dev,LOG_LEVEL=info" \
+            --set-env-vars="NODE_ENV=production,LIT_NETWORK=naga-dev,LOG_LEVEL=info" \
             --quiet
 
       - name: Show Service URL

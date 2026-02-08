@@ -7,8 +7,9 @@
  *
  * This is the crypto-native, decentralized alternative to cloud KMS.
  *
- * DEPRECATION NOTICE: Datil networks (V0) are being sunset on Feb 25, 2026.
- * Plan migration to Habanero (testnet) or Manzano (mainnet) networks.
+ * MIGRATION: Datil (V0) networks shut down Feb 25, 2026.
+ * Naga (V1) networks are the replacement:
+ *   naga-dev (development), naga-test (testnet), naga (mainnet)
  * See: https://developer.litprotocol.com/network/migration
  */
 
@@ -24,16 +25,18 @@ const logger = pino({ name: 'lit-signer' });
 /**
  * Lit Protocol network options
  *
- * NOTE: Datil (V0) networks are being deprecated Feb 25, 2026.
- * - datil-dev: Development (Chronicle Yellowstone) - DEPRECATED
- * - datil-test: Testnet (Chronicle Yellowstone) - DEPRECATED
- * - datil: Mainnet (Chronicle Mainnet) - DEPRECATED
+ * Naga (V1) networks - active:
+ * - naga-dev: Development
+ * - naga-test: Testnet
+ * - naga: Mainnet
  *
- * Future versions will support:
- * - habanero: Testnet (V1)
- * - manzano: Mainnet (V1)
+ * Datil (V0) networks - deprecated, shutdown Feb 25, 2026:
+ * - datil-dev, datil-test, datil
  */
-export const VALID_LIT_NETWORKS = ['datil-dev', 'datil-test', 'datil'] as const;
+export const VALID_LIT_NETWORKS = [
+  'naga-dev', 'naga-test', 'naga',           // V1 (active)
+  'datil-dev', 'datil-test', 'datil',         // V0 (deprecated, removed after Feb 25)
+] as const;
 export type LitNetwork = (typeof VALID_LIT_NETWORKS)[number];
 
 /**
@@ -103,8 +106,8 @@ export class LitSigner implements Signer {
     if (config.network.startsWith('datil')) {
       logger.warn(
         { network: config.network },
-        'Datil (V0) networks are being deprecated on Feb 25, 2026. ' +
-          'Plan migration to Habanero/Manzano networks.'
+        'URGENT: Datil (V0) networks shut down Feb 25, 2026. ' +
+          'Migrate to Naga networks: naga-dev, naga-test, or naga.'
       );
     }
   }
@@ -136,8 +139,10 @@ export class LitSigner implements Signer {
       const { LitNodeClientNodeJs } = await import('@lit-protocol/lit-node-client-nodejs');
 
       // Create Lit client
+      // Cast network: SDK v8 alpha only types 'naga-dev' | 'custom',
+      // but we validate network values ourselves via VALID_LIT_NETWORKS
       this.litNodeClient = new LitNodeClientNodeJs({
-        litNetwork: this.config.network,
+        litNetwork: this.config.network as 'naga-dev',
         debug: false,
       });
 
@@ -351,7 +356,7 @@ export class LitSigner implements Signer {
  * Create a Lit signer from environment variables
  */
 export function createLitSignerFromEnv(): LitSigner {
-  const networkEnv = process.env['LIT_NETWORK'] ?? 'datil-dev';
+  const networkEnv = process.env['LIT_NETWORK'] ?? 'naga-dev';
   const authPrivateKey = process.env['LIT_AUTH_PRIVATE_KEY'];
   const pkpPublicKey = process.env['LIT_PKP_PUBLIC_KEY'];
 

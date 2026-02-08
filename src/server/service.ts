@@ -315,7 +315,7 @@ export function createServiceFromEnv(): SigningService {
   let lit: LitSignerConfig | undefined;
   if (litAuthKey) {
     lit = {
-      network: litNetwork ?? 'datil-dev',
+      network: litNetwork ?? 'naga-dev',
       authPrivateKey: litAuthKey,
       sessionExpirationSeconds: parseInt(process.env['LIT_SESSION_EXPIRY'] ?? '3600', 10),
     };

@@ -99,7 +99,7 @@ Environment variables:
 |----------|-------------|---------|
 | `PORT` | Server port | `8080` |
 | `LOG_LEVEL` | Logging level | `info` |
-| `LIT_NETWORK` | Lit network (datil-dev/datil-test/datil) | `datil-dev` |
+| `LIT_NETWORK` | Lit network (naga-dev/naga-test/naga) | `naga-dev` |
 | `LIT_AUTH_PRIVATE_KEY` | Controller wallet private key (see security note) | Required |
 | `LIT_PKP_PUBLIC_KEY` | PKP public key (required for signing; omit to mint new) | - |
 | `LIT_SESSION_EXPIRY` | Session TTL in seconds (max 86400) | `3600` |
@@ -179,22 +179,25 @@ Before signing, every request is checked against:
 
 ## Lit Protocol Networks
 
-> **Deprecation Notice**: Datil (V0) networks are being sunset on **February 25, 2026**.
-> Plan migration to Habanero (testnet) or Manzano (mainnet) networks.
+> **Migration Complete**: Moved from Datil (V0) to Naga (V1) networks.
+> Datil networks shut down **February 25, 2026**.
 > See: https://developer.litprotocol.com/network/migration
 
-| Network | Use Case | Chain | Status |
-|---------|----------|-------|--------|
-| `datil-dev` | Development | Chronicle Yellowstone | Deprecated Feb 2026 |
-| `datil-test` | Staging | Chronicle Yellowstone | Deprecated Feb 2026 |
-| `datil` | Production | Chronicle Mainnet | Deprecated Feb 2026 |
-
-### Future Networks (V1)
+### Naga Networks (V1 - Active)
 
 | Network | Use Case | Status |
 |---------|----------|--------|
-| `habanero` | Testnet | Coming soon |
-| `manzano` | Mainnet | Coming soon |
+| `naga-dev` | Development | Active (default) |
+| `naga-test` | Testnet | Active |
+| `naga` | Mainnet | Active |
+
+### Datil Networks (V0 - Deprecated)
+
+| Network | Use Case | Status |
+|---------|----------|--------|
+| `datil-dev` | Development | Shutdown Feb 25, 2026 |
+| `datil-test` | Staging | Shutdown Feb 25, 2026 |
+| `datil` | Production | Shutdown Feb 25, 2026 |
 
 ## License
 
