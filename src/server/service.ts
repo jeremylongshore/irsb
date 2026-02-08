@@ -117,13 +117,14 @@ export class SigningService {
 
   /**
    * Get the signer's Ethereum address (PKP address)
+   *
+   * Does not require a Lit network session — address is derived
+   * from the PKP public key using ethers.computeAddress().
    */
   async getAddress(): Promise<string | null> {
     if (!this.signer) {
       return null;
     }
-
-    await this.connect();
 
     if (!this.signerAddress) {
       this.signerAddress = await this.signer.getAddress();
