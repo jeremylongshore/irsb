@@ -352,10 +352,11 @@ export class ERC8004Adapter {
         try {
           const response = await fetch(agentURI);
           if (response.ok) {
-            const data = await response.json();
-            name = data.name || name;
-            description = data.description || '';
-            capabilities = data.services?.map((s: { name: string }) => s.name) || [];
+            const data = await response.json() as Record<string, unknown>;
+            name = (data['name'] as string) || name;
+            description = (data['description'] as string) || '';
+            const services = data['services'] as Array<{ name: string }> | undefined;
+            capabilities = services?.map((s) => s.name) || [];
             metadata = data;
           }
         } catch (fetchError) {
@@ -511,7 +512,14 @@ export class ERC8004Adapter {
       const feedbackURI = ''; // Could point to evidence bundle
       const feedbackHash = signal.evidenceHash as `0x${string}`;
 
+      const chain = this.config.network === 'mainnet' ? mainnet : sepolia;
+      const account = this.walletClient.account;
+      if (!account) {
+        throw new Error('Wallet client has no account configured');
+      }
       const hash = await this.walletClient.writeContract({
+        chain,
+        account,
         address: this.addresses.reputationRegistry,
         abi: REPUTATION_REGISTRY_ABI,
         functionName: 'giveFeedback',
@@ -605,14 +613,18 @@ export function createERC8004ConfigFromEnv(): ERC8004Config {
     return { enabled: false, network: 'sepolia', rpcUrl: '', providerName: 'IRSB Protocol', cacheTimeMs: 60_000 };
   }
 
-  return {
+  const privateKey = process.env['ERC8004_PRIVATE_KEY'] || process.env['LIT_AUTH_PRIVATE_KEY'];
+  const config: ERC8004Config = {
     enabled: true,
     network: (process.env['ERC8004_NETWORK'] as 'mainnet' | 'sepolia') || 'sepolia',
     rpcUrl: process.env['ERC8004_RPC_URL'] || process.env['RPC_URL'] || '',
-    privateKey: process.env['ERC8004_PRIVATE_KEY'] || process.env['LIT_AUTH_PRIVATE_KEY'],
     providerName: process.env['ERC8004_PROVIDER_NAME'] || 'IRSB Protocol',
     cacheTimeMs: parseInt(process.env['ERC8004_CACHE_MS'] || '60000', 10),
   };
+  if (privateKey) {
+    config.privateKey = privateKey;
+  }
+  return config;
 }
 
 /**

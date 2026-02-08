@@ -31,6 +31,7 @@ const mockPublicClient = {
 
 const mockWalletClient = {
   writeContract: vi.fn(),
+  account: { address: '0x1111111111111111111111111111111111111111' },
 };
 
 // Import after mocking
