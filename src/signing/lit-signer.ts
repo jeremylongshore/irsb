@@ -135,7 +135,7 @@ export class LitSigner implements Signer {
     }
 
     try {
-      // Dynamic import to handle optional peer dependency
+      // Dynamic import for Lit Protocol SDK
       const { LitNodeClientNodeJs } = await import('@lit-protocol/lit-node-client-nodejs');
 
       // Create Lit client

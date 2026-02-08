@@ -48,23 +48,13 @@
     "node": ">=20.0.0"
   },
   "dependencies": {
+    "@lit-protocol/contracts-sdk": "8.0.0-alpha.0",
+    "@lit-protocol/lit-node-client-nodejs": "8.0.0-alpha.0",
     "ethers": "^6.13.0",
     "fastify": "^5.0.0",
     "pino": "^9.4.0",
     "viem": "^2.45.1",
     "zod": "^3.23.0"
-  },
-  "peerDependencies": {
-    "@lit-protocol/contracts-sdk": "8.0.0-alpha.0",
-    "@lit-protocol/lit-node-client-nodejs": "8.0.0-alpha.0"
-  },
-  "peerDependenciesMeta": {
-    "@lit-protocol/lit-node-client-nodejs": {
-      "optional": true
-    },
-    "@lit-protocol/contracts-sdk": {
-      "optional": true
-    }
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
