@@ -1,8 +1,10 @@
 # IRSB Agent Passkey
 
+> **DEPRECATED**: This service has been replaced by **Cloud KMS signing + EIP-7702 delegation** with on-chain caveat enforcers. The agent-passkey service remains functional but is no longer the recommended signing path. See the [migration ADR](https://github.com/intent-solutions-io/irsb-protocol/blob/main/000-docs/030-DR-ARCH-eip7702-delegation-architecture.md) for details.
+
 Policy-gated signing gateway for [IRSB Protocol](https://github.com/intent-solutions-io/irsb-protocol). Threshold signatures via Lit Protocol - no single point of key compromise.
 
-> **Status**: MVP implementation complete. Policy engine, audit artifacts, and typed actions are fully functional. Lit Protocol integration is wired up with the SDK - requires PKP credentials for signing.
+> **Status**: Deprecated — replaced by EIP-7702 delegation. Service is still live on Cloud Run but no longer receives new feature development.
 
 ## Overview
 
@@ -15,7 +17,23 @@ IRSB Agent Passkey is the **Identity Plane** for IRSB Protocol agents (solvers, 
 - **Deterministic Audit**: Every decision produces verifiable artifacts
 - **Crypto-Native**: Decentralized infrastructure, not cloud vendor lock-in
 
-## Why Lit Protocol?
+## Migration to EIP-7702 Delegation
+
+As of February 2026, the IRSB ecosystem has moved to **Cloud KMS + EIP-7702 delegation** as the primary signing architecture. Key differences:
+
+| Aspect | Agent Passkey (legacy) | EIP-7702 Delegation (current) |
+|--------|------------------------|-------------------------------|
+| Signing | 2/3 TEE threshold via Lit Protocol | Cloud KMS direct signing |
+| Policy enforcement | Off-chain checks (8 rules) | On-chain caveat enforcers |
+| Latency | 1-2s per signature | <100ms (KMS) |
+| Verification | Trust agent-passkey service | On-chain, transparent |
+| SDK | Lit v8 alpha, type hacks needed | Standard viem/ethers |
+
+For migration details, see: [`protocol/000-docs/030-DR-ARCH-eip7702-delegation-architecture.md`](https://github.com/intent-solutions-io/irsb-protocol/blob/main/000-docs/030-DR-ARCH-eip7702-delegation-architecture.md)
+
+## Why Lit Protocol? (Historical)
+
+> This section documents the original rationale. For new integrations, use Cloud KMS + EIP-7702 delegation instead.
 
 | Feature | Cloud KMS | Lit Protocol |
 |---------|-----------|--------------|
