@@ -1,6 +1,6 @@
 {
   "name": "@irsb/agent-passkey",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Policy-gated signing gateway for IRSB Protocol. Non-extractable keys, typed actions only, deterministic audit artifacts.",
   "type": "module",
   "main": "dist/index.js",

@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.1] - 2026-02-11
+
+Deprecation notice release.
+
+### Documentation
+- Added deprecation banner and migration section to README
+- This service is deprecated in favor of Cloud KMS + EIP-7702 WalletDelegate
+- Migration guide: Use `gcloud kms keys create` + on-chain caveat enforcers
+
+### Deprecated
+- **This entire service is deprecated.** Solver and watchtower now use Cloud KMS directly with on-chain policy enforcement via EIP-7702 delegation contracts.
+
+---
+
 ## [1.0.0] - 2026-02-08
 
 First production release. Deployed to Cloud Run with Lit Protocol Naga network.
