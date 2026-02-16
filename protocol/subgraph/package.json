@@ -1,0 +1,24 @@
+{
+  "name": "irsb-subgraph",
+  "version": "0.1.0",
+  "description": "The Graph subgraph for IRSB Protocol",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy:studio": "graph deploy --studio irsb-protocol",
+    "deploy:hosted": "graph deploy --product hosted-service intentsolutionsio/irsb-protocol",
+    "create:local": "graph create --node http://localhost:8020/ irsb-protocol",
+    "deploy:local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 irsb-protocol",
+    "test": "graph test"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "^0.68.0",
+    "@graphprotocol/graph-ts": "^0.32.0"
+  },
+  "devDependencies": {
+    "matchstick-as": "^0.6.0"
+  },
+  "overrides": {
+    "axios": "^1.13.5"
+  }
+}

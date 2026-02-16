@@ -1,0 +1,24 @@
+{
+  "network": "amoy",
+  "chainId": 80002,
+  "nativeToken": "POL",
+  "deployedAt": null,
+  "deployer": null,
+  "contracts": {
+    "SolverRegistry": null,
+    "IntentReceiptHub": null,
+    "DisputeModule": null,
+    "ERC8004Adapter": null
+  },
+  "polygonscan": {
+    "SolverRegistry": null,
+    "IntentReceiptHub": null,
+    "DisputeModule": null,
+    "ERC8004Adapter": null
+  },
+  "configuration": {
+    "arbitrator": null,
+    "authorizedCallers": []
+  },
+  "notes": "Placeholder - update after running DeployAmoy script"
+}

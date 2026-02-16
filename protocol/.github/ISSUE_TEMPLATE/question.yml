@@ -1,0 +1,38 @@
+name: Question
+description: Ask a question (redirects to Discussions)
+title: "[QUESTION] "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Questions belong in Discussions
+
+        For questions about usage, integration, or general help, please use **GitHub Discussions** instead of Issues.
+
+        **[Go to Discussions](https://github.com/intent-solutions-io/irsb-protocol/discussions)**
+
+        Discussions are better for Q&A because:
+        - Answers can be marked as accepted
+        - Others can find answers more easily
+        - Keeps Issues focused on bugs and features
+
+        ---
+
+        If you still want to open an issue, please use the Bug Report or Feature Request templates instead.
+
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Confirmation
+      options:
+        - label: I understand this should be a Discussion, but I have a specific reason to open an Issue
+          required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: If you still need to ask here, what's your question?
+    validations:
+      required: true

@@ -1,0 +1,70 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#3498db', 'primaryTextColor': '#fff', 'lineColor': '#2c3e50'}}}%%
+flowchart TD
+    subgraph Registration["1. Registration Phase"]
+        A[registerSolver] --> B{Bond >= 0.1 ETH?}
+        B -->|No| C[Status: Inactive]
+        B -->|Yes| D[Status: Active]
+    end
+
+    subgraph Deposit["2. Bond Deposit"]
+        C --> E[depositBond]
+        E --> F{Total >= 0.1 ETH?}
+        F -->|Yes| D
+        F -->|No| C
+    end
+
+    subgraph Active["3. Active Operations"]
+        D --> G{Dispute Filed?}
+        G -->|Yes| H[lockBond: Move to lockedBalance]
+        G -->|No| D
+    end
+
+    subgraph Locked["4. Locked During Dispute"]
+        H --> I{Resolution}
+        I -->|Solver Fault| J[slash: Distribute to parties]
+        I -->|No Fault| K[unlockBond: Return to bondBalance]
+    end
+
+    subgraph PostSlash["5. Post-Slash State"]
+        J --> L{Remaining >= 0.1 ETH?}
+        L -->|Yes| D
+        L -->|No| C
+        K --> D
+    end
+
+    subgraph Withdrawal["6. Withdrawal Process"]
+        D --> M[initiateWithdrawal]
+        M --> N[7-day Cooldown]
+        N --> O{Locked balance = 0?}
+        O -->|Yes| P[withdrawBond]
+        O -->|No| Q[Wait for dispute resolution]
+        P --> R{Remaining >= 0.1 ETH?}
+        R -->|Yes| D
+        R -->|No| C
+    end
+
+    subgraph Penalties["7. Penalty States"]
+        J --> S{Disputes Lost >= 3?}
+        S -->|Yes| T[Status: Jailed]
+        T --> U{Owner unjails?}
+        U -->|Yes| V{Bond >= 0.1 ETH?}
+        V -->|Yes| D
+        V -->|No| C
+        S -->|No| PostSlash
+
+        T --> W{Jailed 3+ times?}
+        W -->|Yes| X[Status: Banned]
+        X --> Y[Permanent - No Recovery]
+    end
+
+    %% Styling
+    style A fill:#3498db,color:#fff
+    style D fill:#27ae60,color:#fff
+    style C fill:#f39c12,color:#fff
+    style H fill:#e74c3c,color:#fff
+    style J fill:#c0392b,color:#fff
+    style T fill:#9b59b6,color:#fff
+    style X fill:#2c3e50,color:#fff
+
+    %% Constants annotations
+    classDef constants fill:#ecf0f1,stroke:#bdc3c7

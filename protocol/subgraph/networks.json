@@ -1,0 +1,30 @@
+{
+  "sepolia": {
+    "SolverRegistry": {
+      "address": "0xB6ab964832808E49635fF82D1996D6a888ecB745",
+      "startBlock": 10100000
+    },
+    "IntentReceiptHub": {
+      "address": "0xD66A1e880AA3939CA066a9EA1dD37ad3d01D977c",
+      "startBlock": 10100000
+    },
+    "DisputeModule": {
+      "address": "0x144DfEcB57B08471e2A75E78fc0d2A74A89DB79D",
+      "startBlock": 10100000
+    }
+  },
+  "matic-amoy": {
+    "SolverRegistry": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "startBlock": 0
+    },
+    "IntentReceiptHub": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "startBlock": 0
+    },
+    "DisputeModule": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "startBlock": 0
+    }
+  }
+}

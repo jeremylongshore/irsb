@@ -1,0 +1,52 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#3498db', 'primaryTextColor': '#fff', 'lineColor': '#2c3e50'}}}%%
+stateDiagram-v2
+    [*] --> Pending: Receipt Posted
+
+    Pending --> Finalized: No dispute after 1h
+    Pending --> Disputed: openDispute called
+
+    state Disputed {
+        [*] --> Locked
+        Locked: Solver bond locked
+        Locked: Challenger bond held
+    }
+
+    Disputed --> DeterministicCheck: resolveDeterministic
+
+    state DeterministicCheck {
+        [*] --> Checking
+        Checking: Verify timeout or signature
+    }
+
+    DeterministicCheck --> Slashed: Violation proven
+    DeterministicCheck --> Pending: Challenge invalid
+    DeterministicCheck --> EvidencePhase: Subjective case
+
+    state EvidencePhase {
+        [*] --> Collecting
+        Collecting: 24h window for evidence
+    }
+
+    EvidencePhase --> Escalated: escalate with 0.01 ETH
+
+    state Escalated {
+        [*] --> Waiting
+        Waiting: Arbitrator has 7 days
+    }
+
+    Escalated --> Slashed: Solver at fault
+    Escalated --> Finalized: Solver not at fault
+    Escalated --> Finalized: 7 day timeout
+
+    state Finalized {
+        [*] --> Done
+        Done: Receipt confirmed valid
+    }
+
+    state Slashed {
+        [*] --> Distributed
+        Distributed: 70% user / 20% treasury / 10% arbitrator
+    }
+
+    Finalized --> [*]
+    Slashed --> [*]

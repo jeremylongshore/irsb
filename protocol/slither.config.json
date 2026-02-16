@@ -1,0 +1,19 @@
+{
+  "detectors_to_exclude": [
+    "naming-convention",
+    "solc-version",
+    "low-level-calls",
+    "arbitrary-send-eth",
+    "weak-prng",
+    "reentrancy-eth"
+  ],
+  "exclude_informational": true,
+  "exclude_low": false,
+  "exclude_medium": false,
+  "exclude_high": false,
+  "filter_paths": "lib/,test/,script/",
+  "solc_remaps": [
+    "@openzeppelin/=lib/openzeppelin-contracts/",
+    "forge-std/=lib/forge-std/src/"
+  ]
+}

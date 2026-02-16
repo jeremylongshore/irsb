@@ -1,0 +1,58 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#3498db', 'primaryTextColor': '#fff', 'lineColor': '#2c3e50'}}}%%
+sequenceDiagram
+    autonumber
+    participant U as User
+    participant S as Solver
+    participant IRH as IntentReceiptHub
+    participant SR as SolverRegistry
+
+    rect rgb(240, 248, 255)
+        Note over U,S: Phase 1: Intent Submission
+        U->>S: Submit Intent (off-chain)
+        S->>S: Execute fill on target chain
+    end
+
+    rect rgb(255, 248, 240)
+        Note over S,IRH: Phase 2: Receipt Posting
+        S->>S: Sign receipt with operator key
+        S->>IRH: postReceipt(receipt)
+        IRH->>IRH: Verify signature via ECDSA
+        IRH->>IRH: Store receipt, status = Pending
+        IRH-->>S: emit ReceiptPosted(receiptId)
+    end
+
+    rect rgb(240, 255, 240)
+        Note over IRH: Phase 3: Challenge Window (1 hour)
+        Note right of IRH: Anyone can dispute<br/>during this window
+
+        alt No Dispute Filed
+            Note over IRH: Challenge window expires...
+            U->>IRH: finalize(receiptId)
+            IRH->>SR: updateScore(solverId, success=true)
+            IRH-->>U: emit ReceiptFinalized(receiptId)
+            Note over IRH: Status: Finalized
+
+        else Dispute Filed (with 10% challenger bond)
+            U->>IRH: openDispute(receiptId, reason)
+            Note right of U: Requires 0.01 ETH<br/>challenger bond
+            IRH->>SR: lockBond(solverId, 0.1 ETH)
+            IRH-->>U: emit DisputeOpened(receiptId)
+            Note over IRH: Status: Disputed
+
+            alt Deterministic Resolution
+                U->>IRH: resolveDeterministic(receiptId)
+
+                alt Solver at Fault
+                    IRH->>SR: slash(solverId, amount)
+                    Note over IRH: 80% to user<br/>15% to challenger<br/>5% to treasury
+                    IRH-->>U: Return challenger bond
+                    Note over IRH: Status: Slashed
+
+                else Solver Not at Fault
+                    IRH->>SR: unlockBond(solverId)
+                    Note over IRH: Challenger loses bond
+                    Note over IRH: Status: Pending
+                end
+            end
+        end
+    end
