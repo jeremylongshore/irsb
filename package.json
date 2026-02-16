@@ -1,0 +1,39 @@
+{
+  "name": "irsb",
+  "version": "0.0.0",
+  "private": true,
+  "description": "IRSB (Intent Receipts & Solver Bonds) — Ethereum's accountability layer for intent-based transactions",
+  "type": "module",
+  "license": "MIT",
+  "author": "Jeremy Longshore",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jeremylongshore/irsb.git"
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "test:protocol": "cd protocol && forge test",
+    "test:solver": "pnpm --filter @irsb/solver test",
+    "test:watchtower": "pnpm --filter @irsb/watchtower... test",
+    "test:agents": "cd services/agents && pytest",
+    "test:gateway": "pnpm --filter @irsb/gateway test",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm -r lint",
+    "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,json,md}\"",
+    "clean": "pnpm -r clean"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.2.0",
+    "typescript": "^5.6.0",
+    "typescript-eslint": "^8.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.15.0"
+}

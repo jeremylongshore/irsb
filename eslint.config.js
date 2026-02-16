@@ -21,9 +21,21 @@ export default tseslint.config(
       ],
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/consistent-type-exports': 'error',
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
     },
   },
   {
-    ignores: ['dist/', 'node_modules/', '*.config.js', '*.config.ts'],
+    ignores: [
+      'dist/',
+      'node_modules/',
+      'coverage/',
+      'protocol/',
+      'archive/',
+      'services/agents/',
+      '*.config.js',
+      '*.config.ts',
+      '*.config.mjs',
+      '*.config.cjs',
+    ],
   }
 );

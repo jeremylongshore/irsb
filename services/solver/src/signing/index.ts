@@ -9,4 +9,4 @@ export {
   createKmsSigner,
   type KmsSignerConfig,
   type KmsSigningResult,
-} from './kms-signer.js';
+} from './kms-signer';

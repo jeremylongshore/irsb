@@ -1,0 +1,10 @@
+node_modules
+dist
+out
+coverage
+pnpm-lock.yaml
+protocol/cache
+protocol/out
+protocol/lib
+archive/
+*.sol
