@@ -1,0 +1,32 @@
+{
+  "name": "@irsb-watchtower/irsb-adapter",
+  "version": "0.3.0",
+  "private": true,
+  "description": "IRSB protocol contract adapter for watchtower",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@irsb-watchtower/config": "workspace:*",
+    "@irsb-watchtower/resilience": "workspace:*",
+    "viem": "^2.21.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "vitest": "^1.2.0"
+  }
+}
