@@ -1,0 +1,34 @@
+{
+  "intentVersion": "0.1.0",
+  "requester": "test-user@example.com",
+  "createdAt": "2026-02-05T12:00:00.000Z",
+  "expiresAt": "2026-12-31T23:59:59.999Z",
+  "jobType": "SAFE_REPORT",
+  "inputs": {
+    "subject": "Quarterly Security Review",
+    "data": {
+      "scope": "production-infrastructure",
+      "period": "Q1-2026",
+      "priority": "high",
+      "tags": ["security", "compliance", "audit"]
+    }
+  },
+  "constraints": {
+    "maxExecutionTime": 300,
+    "outputFormat": "markdown"
+  },
+  "acceptanceCriteria": [
+    {
+      "type": "report-generated",
+      "description": "A valid report must be generated"
+    },
+    {
+      "type": "no-errors",
+      "description": "Execution must complete without errors"
+    }
+  ],
+  "meta": {
+    "source": "fixture",
+    "version": "1"
+  }
+}

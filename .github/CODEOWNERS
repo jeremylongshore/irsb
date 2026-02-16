@@ -1,0 +1,15 @@
+# CODEOWNERS for irsb-solver
+# These owners will be requested for review on PRs
+
+# Default owner for everything
+* @jeremylongshore
+
+# Documentation
+000-docs/* @jeremylongshore
+*.md @jeremylongshore
+
+# Workflows and CI
+.github/ @jeremylongshore
+
+# Source code
+src/ @jeremylongshore
