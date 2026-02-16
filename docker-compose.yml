@@ -1,0 +1,38 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: irsb-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  agents-api:
+    build: .
+    container_name: irsb-agents-api
+    ports:
+      - "8000:8000"
+    environment:
+      - NEXUS_MODE=local
+      - NEXUS_LLM_PROVIDER=ollama
+      - NEXUS_EMBED_PROVIDER=ollama
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_MODEL=llama3
+      - CHROMA_DB_PATH=/data/chroma_db
+      - LEDGER_DB_PATH=/data/irsb_ledger.db
+      - CORPUS_DIR=/data/corpus_repos
+    volumes:
+      - agent_data:/data
+    depends_on:
+      - ollama
+
+volumes:
+  ollama_data:
+  agent_data:
