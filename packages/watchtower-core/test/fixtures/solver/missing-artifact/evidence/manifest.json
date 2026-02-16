@@ -1,0 +1,26 @@
+{
+  "manifestVersion": "0.1.0",
+  "intentId": "intent-003",
+  "runId": "run-003",
+  "jobType": "diagnostic",
+  "createdAt": "2025-01-15T12:00:00Z",
+  "artifacts": [
+    {
+      "path": "artifacts/report.txt",
+      "sha256": "b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9",
+      "bytes": 11,
+      "contentType": "text/plain"
+    }
+  ],
+  "policyDecision": {
+    "allowed": true,
+    "reasons": ["all checks passed"]
+  },
+  "executionSummary": {
+    "status": "SUCCESS"
+  },
+  "solver": {
+    "service": "irsb-solver",
+    "serviceVersion": "1.0.0"
+  }
+}
