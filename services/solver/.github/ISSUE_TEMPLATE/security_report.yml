@@ -1,0 +1,39 @@
+name: Security Report
+description: DO NOT use this for vulnerabilities - see SECURITY.md
+title: "[Security]: "
+labels: ["security"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## ⚠️ STOP - Read Before Continuing
+
+        **Do NOT report security vulnerabilities through public GitHub issues.**
+
+        For security vulnerabilities, please follow the process in [SECURITY.md](../SECURITY.md):
+        1. Email maintainers directly
+        2. Include description, reproduction steps, and impact
+        3. Wait for response before public disclosure
+
+        This form is ONLY for:
+        - Security-related feature requests
+        - Questions about security practices
+        - Non-sensitive security discussions
+
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Confirmation
+      options:
+        - label: This is NOT a security vulnerability report
+          required: true
+        - label: I have read SECURITY.md
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What security-related topic do you want to discuss?
+    validations:
+      required: true
