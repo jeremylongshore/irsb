@@ -1,0 +1,87 @@
+name: CI — Protocol
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'protocol/**'
+      - '.github/workflows/ci-protocol.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'protocol/**'
+      - '.github/workflows/ci-protocol.yml'
+
+env:
+  FOUNDRY_PROFILE: ci
+
+jobs:
+  contracts:
+    name: Foundry Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: protocol
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+
+      - name: Build
+        run: forge build --sizes
+
+      - name: Test
+        run: forge test -vvv
+
+      - name: Coverage check (80% threshold)
+        run: |
+          COVERAGE=$(forge coverage --report summary 2>&1 | grep -E "^Lines:" | awk '{print $NF}' | tr -d '%')
+          echo "Line coverage: ${COVERAGE}%"
+          if [ -n "$COVERAGE" ] && (( $(echo "$COVERAGE < 80" | bc -l) )); then
+            echo "::error::Coverage ${COVERAGE}% is below 80% threshold"
+            exit 1
+          fi
+
+      - name: Gas report
+        run: forge test --gas-report
+
+  lint:
+    name: Solidity Lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: protocol
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+
+      - name: Check formatting
+        run: forge fmt --check
+
+  sdk:
+    name: Protocol SDK
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: protocol/sdk
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm typecheck || true

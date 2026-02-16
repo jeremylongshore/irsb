@@ -1,0 +1,53 @@
+name: CI — TypeScript
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'services/solver/**'
+      - 'services/watchtower/**'
+      - 'services/gateway/**'
+      - 'packages/**'
+      - 'pnpm-workspace.yaml'
+      - 'package.json'
+      - 'tsconfig.base.json'
+      - '.github/workflows/ci-typescript.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'services/solver/**'
+      - 'services/watchtower/**'
+      - 'services/gateway/**'
+      - 'packages/**'
+      - 'pnpm-workspace.yaml'
+      - 'package.json'
+      - 'tsconfig.base.json'
+      - '.github/workflows/ci-typescript.yml'
+
+jobs:
+  build-and-test:
+    name: Build, Test, Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build all packages
+        run: pnpm -r build
+
+      - name: Run tests
+        run: pnpm -r test
+
+      - name: Type check
+        run: pnpm -r typecheck
+
+      - name: Lint
+        run: pnpm -r lint
