@@ -1,0 +1,50 @@
+{
+  "hosting": {
+    "public": "out",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "headers": [
+      {
+        "source": "**",
+        "headers": [
+          { "key": "X-Frame-Options", "value": "DENY" },
+          { "key": "X-Content-Type-Options", "value": "nosniff" },
+          { "key": "X-XSS-Protection", "value": "1; mode=block" },
+          { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+          { "key": "Permissions-Policy", "value": "geolocation=(), microphone=(), camera=()" },
+          {
+            "key": "Content-Security-Policy",
+            "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://api.studio.thegraph.com https://api.thegraph.com https://ipfs.io https://gateway.pinata.cloud https://cloudflare-ipfs.com https://dweb.link; font-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+          }
+        ]
+      }
+    ],
+    "cleanUrls": true,
+    "trailingSlash": false,
+    "rewrites": [
+      { "source": "/dashboard", "destination": "/dashboard.html" },
+      { "source": "/request-docs", "destination": "/request-docs.html" },
+      { "source": "/go/book", "destination": "/go/book.html" },
+      { "source": "/go/request-docs", "destination": "/go/request-docs.html" },
+      { "source": "/how-it-works", "destination": "/how-it-works.html" },
+      { "source": "/use-cases", "destination": "/use-cases.html" },
+      { "source": "/before-after", "destination": "/before-after.html" },
+      { "source": "/faq", "destination": "/faq.html" },
+      { "source": "/one-pager", "destination": "/one-pager.html" },
+      { "source": "/technical", "destination": "/technical.html" },
+      { "source": "/security", "destination": "/security.html" },
+      { "source": "/ecosystem", "destination": "/ecosystem.html" },
+      { "source": "/deployments", "destination": "/deployments.html" },
+      { "source": "/roadmap", "destination": "/roadmap.html" },
+      { "source": "/get-started", "destination": "/get-started.html" },
+      { "source": "/developers/quickstart", "destination": "/developers/quickstart.html" },
+      { "source": "/developers/sdk", "destination": "/developers/sdk.html" },
+      { "source": "/developers/x402", "destination": "/developers/x402.html" },
+      { "source": "/developers/contracts", "destination": "/developers/contracts.html" },
+      { "source": "**", "destination": "/index.html" }
+    ]
+  }
+}

@@ -1,0 +1,92 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: SolverRegistry
+    network: sepolia
+    source:
+      address: "0xB6ab964832808E49635fF82D1996D6a888ecB745"
+      abi: SolverRegistry
+      startBlock: 10100000
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Solver
+        - SlashEvent
+        - BondEvent
+        - ProtocolStats
+        - DailyStats
+      abis:
+        - name: SolverRegistry
+          file: ./abis/SolverRegistry.json
+      eventHandlers:
+        - event: SolverRegistered(indexed bytes32,indexed address,string)
+          handler: handleSolverRegistered
+        - event: BondDeposited(indexed bytes32,uint256,uint256)
+          handler: handleBondDeposited
+        - event: BondWithdrawn(indexed bytes32,uint256,uint256)
+          handler: handleBondWithdrawn
+        - event: SolverSlashed(indexed bytes32,uint256,indexed bytes32,uint8)
+          handler: handleSolverSlashed
+        - event: SolverStatusChanged(indexed bytes32,uint8,uint8)
+          handler: handleSolverStatusChanged
+      file: ./src/solver-registry.ts
+
+  - kind: ethereum
+    name: IntentReceiptHub
+    network: sepolia
+    source:
+      address: "0xD66A1e880AA3939CA066a9EA1dD37ad3d01D977c"
+      abi: IntentReceiptHub
+      startBlock: 10100000
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Receipt
+        - Dispute
+        - Solver
+        - ProtocolStats
+        - DailyStats
+      abis:
+        - name: IntentReceiptHub
+          file: ./abis/IntentReceiptHub.json
+      eventHandlers:
+        - event: ReceiptPosted(indexed bytes32,indexed bytes32,indexed bytes32,uint64)
+          handler: handleReceiptPosted
+        - event: ReceiptFinalized(indexed bytes32,indexed bytes32)
+          handler: handleReceiptFinalized
+        - event: DisputeOpened(indexed bytes32,indexed bytes32,indexed address,uint8)
+          handler: handleDisputeOpened
+        - event: DisputeResolved(indexed bytes32,indexed bytes32,bool,uint256)
+          handler: handleDisputeResolved
+      file: ./src/intent-receipt-hub.ts
+
+  - kind: ethereum
+    name: DisputeModule
+    network: sepolia
+    source:
+      address: "0x144DfEcB57B08471e2A75E78fc0d2A74A89DB79D"
+      abi: DisputeModule
+      startBlock: 10100000
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Dispute
+      abis:
+        - name: DisputeModule
+          file: ./abis/DisputeModule.json
+      eventHandlers:
+        - event: DisputeEscalated(indexed bytes32,indexed address)
+          handler: handleDisputeEscalated
+        - event: EvidenceSubmitted(indexed bytes32,indexed address,bytes32)
+          handler: handleEvidenceSubmitted
+        - event: ArbitrationResolved(indexed bytes32,bool,uint256,string)
+          handler: handleArbitrationResolved
+      file: ./src/dispute-module.ts

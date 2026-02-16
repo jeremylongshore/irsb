@@ -1,0 +1,45 @@
+name: Security Issue
+description: Report a security vulnerability (DO NOT USE - see SECURITY.md)
+title: "[SECURITY] "
+labels: ["security"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## STOP - Do Not Report Security Issues Here
+
+        **Public GitHub Issues are NOT the place for security vulnerabilities.**
+
+        Please follow our responsible disclosure process:
+
+        **[Read SECURITY.md](../../SECURITY.md)**
+
+        ### How to Report
+
+        Email: **jeremy@intentsolutions.io**
+
+        Include:
+        - Description of the vulnerability
+        - Steps to reproduce
+        - Potential impact
+
+        ### Why Private Disclosure?
+
+        Public disclosure of vulnerabilities can:
+        - Put user funds at risk
+        - Allow exploitation before fixes are deployed
+        - Harm the project and its users
+
+        We commit to acknowledging reports within 48 hours.
+
+        ---
+
+        **Do not fill out this form.** Close this tab and email us directly.
+
+  - type: checkboxes
+    id: stop
+    attributes:
+      label: I understand
+      options:
+        - label: I have read SECURITY.md and will report via email instead
+          required: true

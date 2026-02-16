@@ -1,0 +1,52 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#3498db', 'primaryTextColor': '#fff', 'primaryBorderColor': '#2980b9', 'lineColor': '#2c3e50', 'secondaryColor': '#27ae60', 'tertiaryColor': '#f39c12'}}}%%
+graph TB
+    subgraph External["External Actors"]
+        User["User<br/>(Intent Submitter)"]
+        Solver["Solver<br/>(Intent Executor)"]
+        Arb["Arbitrator<br/>(Dispute Resolver)"]
+    end
+
+    subgraph Protocol["IRSB Protocol Core"]
+        SR["SolverRegistry<br/>-----------------<br/>Bond Management<br/>Reputation Tracking<br/>Lifecycle Control"]
+        IRH["IntentReceiptHub<br/>-----------------<br/>Receipt Posting<br/>Challenge Window<br/>Deterministic Disputes"]
+        DM["DisputeModule<br/>-----------------<br/>Evidence Collection<br/>Escalation<br/>Arbitration"]
+    end
+
+    subgraph Data["On-Chain State"]
+        Bonds[(Solver Bonds<br/>0.1+ ETH)]
+        Receipts[(Intent Receipts<br/>Cryptographic Proof)]
+        Scores[(IntentScores<br/>Reputation Metrics)]
+    end
+
+    %% Solver interactions
+    Solver -->|"1. register()"| SR
+    Solver -->|"2. depositBond()"| SR
+    Solver -->|"3. postReceipt()"| IRH
+
+    %% User interactions
+    User -->|"4. openDispute()"| IRH
+
+    %% Cross-contract calls
+    IRH -->|"lockBond()"| SR
+    IRH -->|"slash()"| SR
+    IRH -->|"updateScore()"| SR
+    DM -->|"slash()"| SR
+    DM -->|"unlockBond()"| SR
+    IRH <-->|"escalate / resolve"| DM
+
+    %% Arbitrator
+    Arb -->|"resolve()"| DM
+
+    %% Data relationships
+    SR --> Bonds
+    SR --> Scores
+    IRH --> Receipts
+
+    %% Styling
+    classDef external fill:#e74c3c,stroke:#c0392b,color:#fff
+    classDef core fill:#3498db,stroke:#2980b9,color:#fff
+    classDef data fill:#27ae60,stroke:#1e8449,color:#fff
+
+    class User,Solver,Arb external
+    class SR,IRH,DM core
+    class Bonds,Receipts,Scores data

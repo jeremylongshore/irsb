@@ -1,0 +1,28 @@
+# IRSB Protocol Code Owners
+# These users will be requested for review when changes affect their areas
+
+# Default owner for everything
+* @jeremy
+
+# Smart contracts - require security review
+/src/ @jeremy
+/test/ @jeremy
+/script/ @jeremy
+/audit/ @jeremy
+
+# SDK changes
+/sdk/ @jeremy
+
+# Subgraph changes
+/subgraph/ @jeremy
+
+# Dashboard changes
+/dashboard/ @jeremy
+
+# CI/CD and deployment
+/.github/ @jeremy
+/deployments/ @jeremy
+
+# Documentation
+/000-docs/ @jeremy
+*.md @jeremy

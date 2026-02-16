@@ -1,0 +1,71 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#3498db', 'primaryTextColor': '#fff', 'lineColor': '#2c3e50'}}}%%
+flowchart TB
+    subgraph Inputs["Raw Metrics (On-Chain)"]
+        TF["totalFills<br/>(uint64)"]
+        SF["successfulFills<br/>(uint64)"]
+        DO["disputesOpened<br/>(uint64)"]
+        DL["disputesLost<br/>(uint64)"]
+        VP["volumeProcessed<br/>(uint256 wei)"]
+        TS["totalSlashed<br/>(uint256 wei)"]
+        LA["lastActivityAt<br/>(uint64 timestamp)"]
+    end
+
+    subgraph Calculation["Score Calculation"]
+        FR["Fill Rate<br/>successfulFills / totalFills"]
+        DR["Dispute Rate<br/>disputesLost / disputesOpened"]
+        VL["Volume Level<br/>log10(volumeProcessed)"]
+
+        TF --> FR
+        SF --> FR
+        DO --> DR
+        DL --> DR
+        VP --> VL
+    end
+
+    subgraph Decay["Time Decay (30-day half-life)"]
+        LA --> DM["Decay Multiplier"]
+        DM --> |"elapsed / DECAY_HALF_LIFE"| DC["Decayed Score"]
+
+        subgraph DecayFormula["Decay Formula"]
+            DF1["multiplier = 10000"]
+            DF2["for each half-life:<br/>multiplier = multiplier / 2"]
+            DF3["minimum floor: 10%"]
+        end
+    end
+
+    subgraph Output["Decayed Metrics"]
+        DSF["decayedSuccessfulFills"]
+        DVP["decayedVolumeProcessed"]
+        DMP["decayMultiplierBps"]
+
+        FR --> DC
+        VL --> DC
+        DC --> DSF
+        DC --> DVP
+        DC --> DMP
+    end
+
+    subgraph Usage["Protocol Usage"]
+        REP["Reputation Display"]
+        PRIO["Solver Priority"]
+        TRUST["Trust Threshold"]
+
+        DSF --> REP
+        DVP --> REP
+        DMP --> REP
+
+        REP --> PRIO
+        REP --> TRUST
+
+        TS --> RISK["Risk Assessment"]
+        DR --> RISK
+        RISK --> TRUST
+    end
+
+    %% Styling
+    style FR fill:#27ae60,color:#fff
+    style DR fill:#e74c3c,color:#fff
+    style VL fill:#3498db,color:#fff
+    style DM fill:#9b59b6,color:#fff
+    style DC fill:#f39c12,color:#fff
+    style REP fill:#1abc9c,color:#fff
