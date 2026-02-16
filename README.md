@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/intent-solutions-io/irsb/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-0ea5e9?style=flat-square" alt="License: MIT"></a>
+  <a href="https://github.com/jeremylongshore/irsb/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-0ea5e9?style=flat-square" alt="License: MIT"></a>
   <img src="https://img.shields.io/badge/Solidity-0.8.25-363636?style=flat-square&logo=solidity" alt="Solidity 0.8.25">
   <img src="https://img.shields.io/badge/TypeScript-5.x-3178c6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript">
   <img src="https://img.shields.io/badge/Ethereum-Sepolia-0ea5e9?style=flat-square&logo=ethereum&logoColor=white" alt="Ethereum Sepolia">
@@ -146,15 +146,27 @@ flowchart TB
     X402 -->|settle payment| IRH
 ```
 
-## Repositories
+## Monorepo Structure
 
-| Repo | Description | Status |
-|------|-------------|--------|
-| [protocol](https://github.com/intent-solutions-io/irsb-protocol) | Solidity contracts — receipts, bonds, disputes, escrow (Foundry) | v1.4.0 (Sepolia) |
-| [solver](https://github.com/intent-solutions-io/irsb-solver) | Reference solver implementation (TypeScript, Express) | v0.3.0 |
-| [watchtower](https://github.com/intent-solutions-io/irsb-watchtower) | Monitor receipts, detect violations, file disputes (TypeScript, Fastify) | v0.5.0 |
-| [agents](https://github.com/intent-solutions-io/irsb-agents) | Builder + Money agents with RAG knowledge base (Python, LangChain) | v0.2.0 |
-| [agent-passkey](https://github.com/intent-solutions-io/irsb-agent-passkey) | Policy-gated signing via Lit Protocol PKP (TypeScript, Fastify) | v1.0.1 (Deprecated) |
+```
+irsb/
+├── protocol/           # Solidity contracts — Foundry (v1.4.0, Sepolia)
+│   ├── src/            # Contract source
+│   ├── test/           # Foundry tests (552)
+│   ├── sdk/            # TypeScript SDK (@irsb/sdk)
+│   └── packages/       # x402-irsb
+├── services/
+│   ├── solver/         # Intent executor — TypeScript, Express (v0.3.0)
+│   ├── watchtower/     # Monitor & enforce — TypeScript, Fastify (v0.5.0)
+│   ├── agents/         # AI agents — Python, FastAPI, LangChain (v0.2.0)
+│   └── gateway/        # Intentions Gateway (planned)
+├── packages/
+│   ├── kms-signer/     # Shared GCP Cloud KMS signing (@irsb/kms-signer)
+│   └── types/          # Shared types & contract addresses (@irsb/types)
+├── archive/
+│   └── agent-passkey/  # Deprecated (Lit Protocol PKP)
+└── 000-docs/           # Cross-cutting architecture docs
+```
 
 ## Live Deployments
 
@@ -257,23 +269,21 @@ Self-audited with automated tooling (SolidityGuard, Foundry fuzz suite). **No fo
 <summary><strong>Getting Started</strong></summary>
 
 ```bash
-# Clone the workspace (docs + cross-cutting research)
-git clone https://github.com/intent-solutions-io/irsb.git && cd irsb
+# Clone the monorepo
+git clone https://github.com/jeremylongshore/irsb.git && cd irsb
 
-# Clone individual repos into the workspace
-git clone https://github.com/intent-solutions-io/irsb-protocol.git protocol
-git clone https://github.com/intent-solutions-io/irsb-solver.git solver
-git clone https://github.com/intent-solutions-io/irsb-watchtower.git watchtower
-git clone https://github.com/intent-solutions-io/irsb-agent-passkey.git agent-passkey
+# Install all TypeScript dependencies
+pnpm install
 
-# Build & test the protocol
-cd protocol && forge build && forge test
+# Build & test the protocol (Foundry)
+cd protocol && forge build && forge test && cd ..
 
-# Build & test a TypeScript service
-cd ../solver && pnpm install && pnpm build && pnpm test
+# Build & test all TypeScript services
+pnpm -r build && pnpm -r test
+
+# Test agents (Python)
+cd services/agents && pip install -e ".[dev]" && pytest
 ```
-
-Each repo has its own README and CLAUDE.md with detailed setup and contribution instructions.
 
 </details>
 

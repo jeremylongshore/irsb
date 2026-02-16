@@ -10,7 +10,7 @@
 | **Organization** | `intent-solutions-io` |
 | **GCP Project** | `irsb-protocol` (308207955734) |
 | **Network** | Sepolia testnet (chain ID: 11155111) |
-| **Repos** | 5 (protocol, solver, watchtower, agents, agent-passkey) |
+| **Repo** | [jeremylongshore/irsb](https://github.com/jeremylongshore/irsb) (monorepo) |
 | **License** | MIT |
 | **Primary positioning** | On-chain guardrails for AI agents |
 
@@ -264,27 +264,37 @@ Cloud KMS → (signing) → solver, watchtower
 | Treasury | 5% | 20% |
 | Arbitrator | - | 10% |
 
-## GitHub Repositories
+## Repository
 
-| Repo | URL | Tech Stack |
-|------|-----|------------|
-| `irsb-protocol` | https://github.com/intent-solutions-io/irsb-protocol | Solidity, Foundry |
-| `irsb-solver` | https://github.com/intent-solutions-io/irsb-solver | TypeScript, Node.js |
-| `irsb-watchtower` | https://github.com/intent-solutions-io/irsb-watchtower | TypeScript, Node.js |
-| `irsb-agents` | https://github.com/intent-solutions-io/irsb-agents | Python, FastAPI, LangChain |
-| `irsb-agent-passkey` | https://github.com/intent-solutions-io/irsb-agent-passkey | TypeScript, Fastify |
+**Monorepo**: https://github.com/jeremylongshore/irsb
 
-## Local Workspace Structure
+| Directory | Tech Stack |
+|-----------|------------|
+| `protocol/` | Solidity, Foundry |
+| `services/solver/` | TypeScript, Node.js |
+| `services/watchtower/` | TypeScript, Node.js |
+| `services/agents/` | Python, FastAPI, LangChain |
+| `services/gateway/` | TypeScript (planned) |
+| `packages/kms-signer/` | TypeScript |
+| `packages/types/` | TypeScript |
+| `archive/agent-passkey/` | TypeScript, Fastify (deprecated) |
+
+## Monorepo Structure
 
 ```text
-~/000-projects/irsb/
-├── protocol/           # On-chain Solidity contracts (v1.4.0)
-├── solver/             # Reference off-chain solver (v0.3.0)
-├── watchtower/         # Monitoring and dispute service (v0.5.0)
-├── agents/             # AI agents with RAG + Z3 verification (v0.2.0)
-├── agent-passkey/      # Policy-gated signing gateway (DEPRECATED)
-├── CLAUDE.md           # Workspace-level guidance
-└── AI-CONTEXT.md       # This file
+irsb/
+├── protocol/               # On-chain Solidity contracts (v1.4.0)
+├── services/
+│   ├── solver/             # Reference off-chain solver (v0.3.0)
+│   ├── watchtower/         # Monitoring and dispute service (v0.5.0)
+│   ├── agents/             # AI agents with RAG + Z3 (v0.2.0)
+│   └── gateway/            # Intentions Gateway (planned)
+├── packages/
+│   ├── kms-signer/         # Shared GCP Cloud KMS signing
+│   └── types/              # Shared types + contract addresses
+├── archive/agent-passkey/  # Deprecated
+├── CLAUDE.md
+└── AI-CONTEXT.md           # This file
 ```
 
 ## ERC-8004: Trustless Agents Standard

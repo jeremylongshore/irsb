@@ -6,15 +6,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Workspace Overview
 
-**IRSB (Intent Receipts & Solver Bonds)** is Ethereum's accountability layer for intent-based transactions. This is a multi-project workspace containing five repos in a unified structure.
+**IRSB (Intent Receipts & Solver Bonds)** is Ethereum's accountability layer for intent-based transactions. This is a **monorepo** containing all IRSB services and shared packages.
 
-| Project | Tech Stack | Purpose | Status |
-|---------|------------|---------|--------|
-| `protocol/` | Solidity 0.8.25, Foundry | On-chain contracts (receipts, bonds, disputes, escrow) | Deployed (Sepolia) |
-| `solver/` | TypeScript, Express | Execute intents, produce evidence, submit receipts | v0.3.0 |
-| `watchtower/` | TypeScript, Fastify (pnpm monorepo) | Monitor receipts, detect violations, file disputes | v0.5.0 |
-| `agents/` | Python 3.11+, FastAPI, LangChain, ChromaDB | AI agents (builder + money) with RAG + Z3 verification | v0.2.0 |
-| `agent-passkey/` | TypeScript, Fastify | Policy-gated signing via Lit Protocol PKP | Deprecated (Cloud Run, legacy) |
+| Directory | Tech Stack | Purpose | Status |
+|-----------|------------|---------|--------|
+| `protocol/` | Solidity 0.8.25, Foundry | On-chain contracts (receipts, bonds, disputes, escrow) | v1.4.0 (Sepolia) |
+| `services/solver/` | TypeScript, Express | Execute intents, produce evidence, submit receipts | v0.3.0 |
+| `services/watchtower/` | TypeScript, Fastify (pnpm monorepo) | Monitor receipts, detect violations, file disputes | v0.5.0 |
+| `services/agents/` | Python 3.11+, FastAPI, LangChain, ChromaDB | AI agents (builder + money) with RAG + Z3 verification | v0.2.0 |
+| `services/gateway/` | TypeScript (planned) | Intentions Gateway — Web2/Web3 policy enforcement | Phase 1 |
+| `packages/kms-signer/` | TypeScript | Shared GCP Cloud KMS signing | v0.1.0 |
+| `packages/types/` | TypeScript | Shared types, contract addresses, constants | v0.1.0 |
+| `archive/agent-passkey/` | TypeScript, Fastify | Policy-gated signing via Lit Protocol PKP | Deprecated |
 
 ## Build, Test, Lint Commands
 
@@ -42,7 +45,7 @@ cd dashboard && pnpm dev              # Next.js dashboard (in protocol/)
 ### Solver (single TypeScript project)
 
 ```bash
-cd solver/
+cd services/solver/
 pnpm install
 pnpm build              # tsc
 pnpm test               # vitest run
@@ -62,7 +65,7 @@ Tests are **co-located** with source: `src/**/*.test.ts`
 ### Watchtower (pnpm workspace monorepo)
 
 ```bash
-cd watchtower/
+cd services/watchtower/
 pnpm install
 pnpm build              # Build all packages + apps
 pnpm test               # Run all tests across workspace
@@ -75,10 +78,10 @@ pnpm dev:api            # Fastify API on :3000
 pnpm dev:worker         # Background scanner
 
 # Single package operations (use --filter)
-pnpm --filter @irsb-watchtower/core test
-pnpm --filter @irsb-watchtower/core test:watch
-pnpm --filter @irsb-watchtower/core vitest run receiptStaleRule   # Single test file
-pnpm --filter @irsb-watchtower/api build
+pnpm --filter @irsb/watchtower-core test
+pnpm --filter @irsb/watchtower-core test:watch
+pnpm --filter @irsb/watchtower-core vitest run receiptStaleRule   # Single test file
+pnpm --filter @irsb/watchtower-api build
 
 # Canonical hash drift check
 pnpm canonical:check
@@ -91,10 +94,10 @@ pnpm canonical:refresh
 - Internal deps use `workspace:*` protocol
 - Tests per package in `test/` directories, discovered via `vitest.workspace.ts`
 
-### Agent Passkey (single TypeScript project)
+### Agent Passkey (DEPRECATED — archive only)
 
 ```bash
-cd agent-passkey/
+cd archive/agent-passkey/
 pnpm install
 pnpm build              # tsc
 pnpm test               # vitest run
@@ -180,10 +183,8 @@ When contract interfaces change:
 
 Each project has a flat `000-docs/` directory (no subdirectories). Files follow naming convention: `NNN-CC-ABCD-short-description.md` (CC = category code like DR/AT/OD).
 
-## GitHub Repositories
+## GitHub Repository
 
-All repos under `intent-solutions-io`:
-- [irsb-protocol](https://github.com/intent-solutions-io/irsb-protocol)
-- [irsb-solver](https://github.com/intent-solutions-io/irsb-solver)
-- [irsb-watchtower](https://github.com/intent-solutions-io/irsb-watchtower)
-- [irsb-agent-passkey](https://github.com/intent-solutions-io/irsb-agent-passkey)
+**Monorepo**: [jeremylongshore/irsb](https://github.com/jeremylongshore/irsb)
+
+All code lives in this single repository. The old individual repos under `intent-solutions-io` are archived with redirect notices.
