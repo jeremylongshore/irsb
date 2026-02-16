@@ -1,0 +1,9 @@
+=== Pre-Migration Snapshot ===
+Date: 2026-02-16T18:04:44Z
+
+protocol: ed365e62282800165e2abc8ba2a2c418704c60c2 (main) [git@github.com:intent-solutions-io/irsb-protocol.git] tags=[v1.0.0 v1.1.0 v1.2.0 v1.3.0 v1.3.1 v1.4.0 ]
+solver: a9f7fa3aab51b836be1034346823abb865f6543e (main) [https://github.com/intent-solutions-io/irsb-solver.git] tags=[v0.1.0 v0.2.0 v0.3.0 ]
+watchtower: 36ea8926dd413cc318061ed0fb3eed3e13a6a802 (main) [https://github.com/intent-solutions-io/IRSB-watchtower.git] tags=[v0.2.0 v0.3.0 v0.4.0 v0.5.0 ]
+agents: a367aacd45a666daef1070c57537b7771150a022 (main) [https://github.com/intent-solutions-io/irsb-agents.git] tags=[v0.1.0 v0.2.0 ]
+agent-passkey: d5e8e274498a4131c664c0d8338e3ef1b65a80d0 (main) [git@github.com:intent-solutions-io/irsb-agent-passkey.git] tags=[v1.0.0 v1.0.1 ]
+workspace: 177542480bb908c03eeee5ba995dfad99c491b75 (main) [git@github.com:intent-solutions-io/irsb-workspace.git]
