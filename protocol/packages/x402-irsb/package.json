@@ -1,5 +1,5 @@
 {
-  "name": "irsb-x402",
+  "name": "@irsb/x402",
   "version": "0.1.0",
   "description": "x402 HTTP Payment Protocol integration for IRSB ReceiptV2",
   "type": "module",
@@ -50,7 +50,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/intent-solutions-io/irsb-protocol.git",
-    "directory": "packages/x402-irsb"
+    "url": "https://github.com/jeremylongshore/irsb.git",
+    "directory": "protocol/packages/x402-irsb"
   }
 }

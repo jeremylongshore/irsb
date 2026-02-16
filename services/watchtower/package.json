@@ -1,5 +1,5 @@
 {
-  "name": "irsb-watchtower",
+  "name": "@irsb/watchtower",
   "version": "0.5.0",
   "private": true,
   "description": "Universal watchtower service for IRSB protocol - monitors on-chain activity, detects violations, and optionally auto-acts",

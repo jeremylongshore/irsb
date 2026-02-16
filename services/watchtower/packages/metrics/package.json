@@ -1,5 +1,5 @@
 {
-  "name": "@irsb-watchtower/metrics",
+  "name": "@irsb/watchtower-metrics",
   "version": "0.3.0",
   "description": "Shared Prometheus metrics for IRSB Watchtower",
   "type": "module",

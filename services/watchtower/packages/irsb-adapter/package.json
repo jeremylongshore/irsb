@@ -1,5 +1,5 @@
 {
-  "name": "@irsb-watchtower/irsb-adapter",
+  "name": "@irsb/watchtower-irsb-adapter",
   "version": "0.3.0",
   "private": true,
   "description": "IRSB protocol contract adapter for watchtower",
@@ -21,8 +21,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@irsb-watchtower/config": "workspace:*",
-    "@irsb-watchtower/resilience": "workspace:*",
+    "@irsb/watchtower-config": "workspace:*",
+    "@irsb/watchtower-resilience": "workspace:*",
     "viem": "^2.21.0"
   },
   "devDependencies": {

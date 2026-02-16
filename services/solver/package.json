@@ -1,5 +1,5 @@
 {
-  "name": "@intent-solutions-io/irsb-solver",
+  "name": "@irsb/solver",
   "version": "0.3.0",
   "description": "Reference solver/executor service for IRSB protocol",
   "type": "module",
@@ -39,7 +39,8 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/intent-solutions-io/irsb-solver.git"
+    "url": "https://github.com/jeremylongshore/irsb.git",
+    "directory": "services/solver"
   },
   "bugs": {
     "url": "https://github.com/intent-solutions-io/irsb-solver/issues"

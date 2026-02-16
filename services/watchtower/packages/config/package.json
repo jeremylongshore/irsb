@@ -1,5 +1,5 @@
 {
-  "name": "@irsb-watchtower/config",
+  "name": "@irsb/watchtower-config",
   "version": "0.3.0",
   "private": true,
   "description": "Configuration schemas and environment loader for IRSB Watchtower",

@@ -1,5 +1,5 @@
 {
-  "name": "@irsb-watchtower/resilience",
+  "name": "@irsb/watchtower-resilience",
   "version": "0.3.0",
   "description": "Resilience patterns (retry, circuit-breaker) for IRSB Watchtower",
   "type": "module",

@@ -1,5 +1,5 @@
 {
-  "name": "@irsb-watchtower/worker",
+  "name": "@irsb/watchtower-worker",
   "version": "0.3.0",
   "private": true,
   "description": "Background worker for IRSB Watchtower scanning",
@@ -15,14 +15,14 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@irsb-watchtower/chain": "workspace:*",
-    "@irsb-watchtower/config": "workspace:*",
-    "@irsb-watchtower/core": "workspace:*",
-    "@irsb-watchtower/evidence-store": "workspace:*",
-    "@irsb-watchtower/irsb-adapter": "workspace:*",
-    "@irsb-watchtower/signers": "workspace:*",
-    "@irsb-watchtower/metrics": "workspace:*",
-    "@irsb-watchtower/webhook": "workspace:*",
+    "@irsb/watchtower-chain": "workspace:*",
+    "@irsb/watchtower-config": "workspace:*",
+    "@irsb/watchtower-core": "workspace:*",
+    "@irsb/watchtower-evidence-store": "workspace:*",
+    "@irsb/watchtower-irsb-adapter": "workspace:*",
+    "@irsb/watchtower-signers": "workspace:*",
+    "@irsb/watchtower-metrics": "workspace:*",
+    "@irsb/watchtower-webhook": "workspace:*",
     "pino": "^8.19.0",
     "pino-pretty": "^10.3.0"
   },

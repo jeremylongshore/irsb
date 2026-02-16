@@ -1,5 +1,5 @@
 {
-  "name": "@irsb-watchtower/evidence-store",
+  "name": "@irsb/watchtower-evidence-store",
   "version": "0.3.0",
   "private": true,
   "description": "JSONL evidence store with Zod schema validation",

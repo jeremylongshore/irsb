@@ -1,5 +1,5 @@
 {
-  "name": "@irsb-watchtower/watchtower-api",
+  "name": "@irsb/watchtower-api",
   "version": "0.3.0",
   "private": true,
   "description": "HTTP API for IRSB Watchtower: agent risk, alerts, receipt ingest, transparency log",
@@ -21,7 +21,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@irsb-watchtower/watchtower-core": "workspace:*",
+    "@irsb/watchtower-core": "workspace:*",
     "fastify": "^5.7.4"
   },
   "devDependencies": {

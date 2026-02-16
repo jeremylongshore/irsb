@@ -1,5 +1,5 @@
 {
-  "name": "@irsb-watchtower/watchtower-cli",
+  "name": "@irsb/watchtower-cli",
   "version": "0.3.0",
   "private": true,
   "description": "CLI for IRSB Watchtower: init-db, scoring, alerts, risk reports",
@@ -16,8 +16,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@irsb-watchtower/chain": "workspace:*",
-    "@irsb-watchtower/watchtower-core": "workspace:*",
+    "@irsb/watchtower-chain": "workspace:*",
+    "@irsb/watchtower-core": "workspace:*",
     "commander": "^12.0.0",
     "picocolors": "^1.0.0",
     "viem": "^2.21.0",

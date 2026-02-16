@@ -167,22 +167,22 @@ importers:
 
   services/watchtower/apps/api:
     dependencies:
-      '@irsb-watchtower/chain':
+      '@irsb/watchtower-chain':
         specifier: workspace:*
         version: link:../../packages/chain
-      '@irsb-watchtower/config':
+      '@irsb/watchtower-config':
         specifier: workspace:*
         version: link:../../packages/config
-      '@irsb-watchtower/core':
+      '@irsb/watchtower-core':
         specifier: workspace:*
-        version: link:../../packages/core
-      '@irsb-watchtower/irsb-adapter':
+        version: link:../../packages/watchtower-core
+      '@irsb/watchtower-irsb-adapter':
         specifier: workspace:*
         version: link:../../packages/irsb-adapter
-      '@irsb-watchtower/metrics':
+      '@irsb/watchtower-metrics':
         specifier: workspace:*
         version: link:../../packages/metrics
-      '@irsb-watchtower/signers':
+      '@irsb/watchtower-signers':
         specifier: workspace:*
         version: link:../../packages/signers
       fastify:
@@ -210,16 +210,16 @@ importers:
 
   services/watchtower/apps/cli:
     dependencies:
-      '@irsb-watchtower/chain':
+      '@irsb/watchtower-chain':
         specifier: workspace:*
         version: link:../../packages/chain
-      '@irsb-watchtower/config':
+      '@irsb/watchtower-config':
         specifier: workspace:*
         version: link:../../packages/config
-      '@irsb-watchtower/core':
+      '@irsb/watchtower-core':
         specifier: workspace:*
-        version: link:../../packages/core
-      '@irsb-watchtower/irsb-adapter':
+        version: link:../../packages/watchtower-core
+      '@irsb/watchtower-irsb-adapter':
         specifier: workspace:*
         version: link:../../packages/irsb-adapter
       commander:
@@ -244,28 +244,28 @@ importers:
 
   services/watchtower/apps/worker:
     dependencies:
-      '@irsb-watchtower/chain':
+      '@irsb/watchtower-chain':
         specifier: workspace:*
         version: link:../../packages/chain
-      '@irsb-watchtower/config':
+      '@irsb/watchtower-config':
         specifier: workspace:*
         version: link:../../packages/config
-      '@irsb-watchtower/core':
+      '@irsb/watchtower-core':
         specifier: workspace:*
-        version: link:../../packages/core
-      '@irsb-watchtower/evidence-store':
+        version: link:../../packages/watchtower-core
+      '@irsb/watchtower-evidence-store':
         specifier: workspace:*
         version: link:../../packages/evidence-store
-      '@irsb-watchtower/irsb-adapter':
+      '@irsb/watchtower-irsb-adapter':
         specifier: workspace:*
         version: link:../../packages/irsb-adapter
-      '@irsb-watchtower/metrics':
+      '@irsb/watchtower-metrics':
         specifier: workspace:*
         version: link:../../packages/metrics
-      '@irsb-watchtower/signers':
+      '@irsb/watchtower-signers':
         specifier: workspace:*
         version: link:../../packages/signers
-      '@irsb-watchtower/webhook':
+      '@irsb/watchtower-webhook':
         specifier: workspace:*
         version: link:../../packages/webhook
       pino:
@@ -341,10 +341,10 @@ importers:
 
   services/watchtower/packages/irsb-adapter:
     dependencies:
-      '@irsb-watchtower/config':
+      '@irsb/watchtower-config':
         specifier: workspace:*
         version: link:../config
-      '@irsb-watchtower/resilience':
+      '@irsb/watchtower-resilience':
         specifier: workspace:*
         version: link:../resilience
       viem:
@@ -398,7 +398,7 @@ importers:
 
   services/watchtower/packages/watchtower-api:
     dependencies:
-      '@irsb-watchtower/watchtower-core':
+      '@irsb/watchtower-core':
         specifier: workspace:*
         version: link:../watchtower-core
       fastify:
@@ -423,10 +423,10 @@ importers:
 
   services/watchtower/packages/watchtower-cli:
     dependencies:
-      '@irsb-watchtower/chain':
+      '@irsb/watchtower-chain':
         specifier: workspace:*
         version: link:../chain
-      '@irsb-watchtower/watchtower-core':
+      '@irsb/watchtower-core':
         specifier: workspace:*
         version: link:../watchtower-core
       commander:

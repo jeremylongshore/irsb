@@ -1,5 +1,5 @@
 {
-  "name": "irsb",
+  "name": "@irsb/sdk",
   "version": "0.1.0",
   "description": "SDK for IRSB Protocol - Intent Receipts & Solver Bonds",
   "publishConfig": {
@@ -34,8 +34,8 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/intent-solutions-io/irsb-protocol.git",
-    "directory": "sdk"
+    "url": "https://github.com/jeremylongshore/irsb.git",
+    "directory": "protocol/sdk"
   },
   "homepage": "https://irsb-protocol.web.app",
   "dependencies": {

@@ -1,5 +1,5 @@
 {
-  "name": "@irsb-watchtower/api",
+  "name": "@irsb/watchtower-api",
   "version": "0.3.0",
   "private": true,
   "description": "HTTP API server for IRSB Watchtower",
@@ -15,12 +15,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@irsb-watchtower/chain": "workspace:*",
-    "@irsb-watchtower/config": "workspace:*",
-    "@irsb-watchtower/core": "workspace:*",
-    "@irsb-watchtower/irsb-adapter": "workspace:*",
-    "@irsb-watchtower/metrics": "workspace:*",
-    "@irsb-watchtower/signers": "workspace:*",
+    "@irsb/watchtower-chain": "workspace:*",
+    "@irsb/watchtower-config": "workspace:*",
+    "@irsb/watchtower-core": "workspace:*",
+    "@irsb/watchtower-irsb-adapter": "workspace:*",
+    "@irsb/watchtower-metrics": "workspace:*",
+    "@irsb/watchtower-signers": "workspace:*",
     "fastify": "^5.7.4",
     "pino": "^8.19.0",
     "pino-pretty": "^10.3.0"
