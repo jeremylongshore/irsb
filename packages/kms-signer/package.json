@@ -1,0 +1,29 @@
+{
+  "name": "@irsb/kms-signer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared GCP Cloud KMS signer for IRSB services",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@google-cloud/kms": "^5.3.0",
+    "viem": "^2.45.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "vitest": "^2.0.0"
+  }
+}
