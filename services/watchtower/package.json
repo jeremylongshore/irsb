@@ -7,7 +7,7 @@
   "author": "Jeremy Longshore",
   "type": "module",
   "scripts": {
-    "build": "pnpm -r build",
+    "build": "echo 'watchtower sub-packages built by root pnpm -r build'",
     "clean": "pnpm -r clean && rm -rf node_modules",
     "dev:api": "pnpm --filter @irsb-watchtower/api dev",
     "dev:worker": "pnpm --filter @irsb-watchtower/worker dev",
@@ -16,8 +16,8 @@
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,json,md}\"",
-    "test": "pnpm -r test",
-    "typecheck": "pnpm -r typecheck",
+    "test": "echo 'watchtower sub-packages tested by root pnpm -r test'",
+    "typecheck": "echo 'watchtower sub-packages typechecked by root pnpm -r typecheck'",
     "canonical:check": "node scripts/check-canonical-ci.mjs",
     "canonical:refresh": "bash scripts/refresh-canonical-hashes.sh"
   },

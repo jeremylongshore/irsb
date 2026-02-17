@@ -108,7 +108,7 @@ describe('GcpKmsSigner (stub)', () => {
     );
   });
 
-  it('throws on getAddress when KMS is not configured', async () => {
+  it('throws on getAddress when KMS is not configured', { timeout: 15000 }, async () => {
     const signer = new GcpKmsSigner({
       projectId: 'test-project',
       location: 'us-central1',
@@ -116,7 +116,7 @@ describe('GcpKmsSigner (stub)', () => {
       key: 'test-key',
     });
 
-    // Will throw due to KMS not being configured in test env
+    // Will throw due to KMS not being configured in test env (may take >5s for GCP client timeout)
     await expect(signer.getAddress()).rejects.toThrow();
   });
 
