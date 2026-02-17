@@ -4,9 +4,9 @@
  * Provides functions for signing receipts as either solver or client.
  */
 
-import { Wallet, TypedDataEncoder, keccak256, getBytes, recoverAddress } from 'ethers';
-import type { IntentReceiptV2, EIP712TypedData } from './types.js';
-import { getEIP712Domain, createSigningPayload } from './receipt.js';
+import { Wallet, TypedDataEncoder, keccak256, recoverAddress } from 'ethers';
+import type { IntentReceiptV2 } from './types.js';
+import { createSigningPayload } from './receipt.js';
 
 /**
  * Sign a receipt as the solver (service provider).

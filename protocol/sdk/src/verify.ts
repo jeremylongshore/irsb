@@ -9,7 +9,6 @@ import { ChainConfig, CHAIN_CONFIGS, ReceiptStatus, IntentReceipt } from './type
 import {
   IntentReceiptV2,
   ReceiptV2Status,
-  verifyReceiptV2Signature,
   getEIP712Domain,
 } from './v2';
 import { INTENT_RECEIPT_HUB_ABI, RECEIPT_V2_EXTENSION_ABI } from './contracts/abis';

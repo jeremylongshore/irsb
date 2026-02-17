@@ -10,7 +10,7 @@
  */
 
 import { verifyReceipt, formatVerifyResult } from './verify';
-import { CHAIN_CONFIGS, SUPPORTED_CHAIN_IDS } from './types';
+import { CHAIN_CONFIGS } from './types';
 
 // ============ CLI Parsing ============
 

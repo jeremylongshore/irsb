@@ -7,7 +7,6 @@
 
 import { ZeroHash, keccak256, solidityPacked } from 'ethers';
 import type {
-  X402ReceiptPayload,
   X402ToReceiptParams,
   X402ReceiptResult,
   IntentReceiptV2,

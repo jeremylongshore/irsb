@@ -92,15 +92,15 @@ export function parsePermissionResponse(
       case 'spend-limit':
         config.spendLimit = {
           token: grant.data.token as `0x${string}`,
-          dailyCap: BigInt(grant.data.dailyLimit),
-          perTxCap: BigInt(grant.data.perTransactionLimit),
+          dailyCap: BigInt(grant.data.dailyLimit as string | number | bigint),
+          perTxCap: BigInt(grant.data.perTransactionLimit as string | number | bigint),
         };
         break;
 
       case 'session':
         config.timeWindow = {
-          notBefore: BigInt(grant.data.validAfter),
-          notAfter: BigInt(grant.data.validUntil),
+          notBefore: BigInt(grant.data.validAfter as string | number | bigint),
+          notAfter: BigInt(grant.data.validUntil as string | number | bigint),
         };
         break;
 

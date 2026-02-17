@@ -301,19 +301,19 @@ export class GcpKmsSigner implements Signer {
 
 function parseDerSignature(der: Buffer): { r: bigint; s: bigint } {
   if (der[0] !== 0x30) {
-    throw new Error(`Invalid DER: expected 0x30, got 0x${der[0].toString(16)}`);
+    throw new Error(`Invalid DER: expected 0x30, got 0x${der[0]!.toString(16)}`);
   }
 
   let offset = 2;
 
   if (der[offset] !== 0x02) throw new Error('Invalid DER: expected 0x02 for r');
   offset++;
-  const rLen = der[offset]; offset++;
+  const rLen = der[offset]!; offset++;
   const rBytes = der.subarray(offset, offset + rLen); offset += rLen;
 
   if (der[offset] !== 0x02) throw new Error('Invalid DER: expected 0x02 for s');
   offset++;
-  const sLen = der[offset]; offset++;
+  const sLen = der[offset]!; offset++;
   const sBytes = der.subarray(offset, offset + sLen);
 
   return {
@@ -333,7 +333,7 @@ function asn1Integer(buf: Buffer): Buffer {
   let start = 0;
   while (start < buf.length - 1 && buf[start] === 0) start++;
   let trimmed = buf.subarray(start);
-  if (trimmed[0] & 0x80) {
+  if (trimmed[0]! & 0x80) {
     trimmed = Buffer.concat([Buffer.from([0x00]), trimmed]);
   }
   return Buffer.concat([Buffer.from([0x02, trimmed.length]), trimmed]);
