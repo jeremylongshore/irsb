@@ -1,6 +1,6 @@
 {
   "name": "irsb",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "description": "IRSB (Intent Receipts & Solver Bonds) — Ethereum's accountability layer for intent-based transactions",
   "type": "module",
