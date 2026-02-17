@@ -1,8 +1,10 @@
 # CLAUDE.md
 
+> **Part of the IRSB monorepo** (`jeremylongshore/irsb`). See root CLAUDE.md for workspace overview.
+>
 > **AI Context**: For ecosystem-wide reference (contracts, deployments, concepts, glossary), see [../AI-CONTEXT.md](../AI-CONTEXT.md)
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with this sub-project.
 
 ## Project Overview
 
@@ -73,7 +75,7 @@ IRSB fills that gap with:
 ## Repository Structure
 
 ```
-irsb-protocol/
+protocol/                           # within monorepo root
 ├── src/                        # Solidity contracts
 │   ├── SolverRegistry.sol      # Solver lifecycle, bonding, slashing
 │   ├── IntentReceiptHub.sol    # Receipt posting, disputes, finalization

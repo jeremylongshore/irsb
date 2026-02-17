@@ -17,7 +17,6 @@
     "test:solver": "pnpm --filter @irsb/solver test",
     "test:watchtower": "pnpm --filter @irsb/watchtower... test",
     "test:agents": "cd services/agents && pytest",
-    "test:gateway": "pnpm --filter @irsb/gateway test",
     "typecheck": "pnpm -r typecheck",
     "lint": "pnpm -r lint",
     "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",

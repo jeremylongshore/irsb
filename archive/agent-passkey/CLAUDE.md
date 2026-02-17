@@ -1,6 +1,9 @@
 # CLAUDE.md
 
-> **AI Context**: For ecosystem-wide reference (contracts, deployments, concepts, glossary), see [../AI-CONTEXT.md](../AI-CONTEXT.md)
+> **DEPRECATED** - This project is deprecated. Both solver and watchtower have migrated to Cloud KMS signing.
+> No new development should occur here. Kept for reference only.
+>
+> **Part of the IRSB monorepo** (`jeremylongshore/irsb`). See root CLAUDE.md for workspace overview.
 
 This file provides guidance to Claude Code when working with the IRSB Agent Passkey codebase.
 
@@ -20,7 +23,7 @@ This file provides guidance to Claude Code when working with the IRSB Agent Pass
 
 **GCP Project:** `irsb-protocol`
 **Cloud Run Region:** `us-central1`
-**GitHub:** https://github.com/intent-solutions-io/irsb-agent-passkey
+**GitHub:** https://github.com/jeremylongshore/irsb (monorepo, `archive/agent-passkey/`)
 
 ## Signing Architecture
 

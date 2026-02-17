@@ -1,10 +1,12 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+> **Part of the IRSB monorepo** (`jeremylongshore/irsb`). See root CLAUDE.md for workspace overview.
+
+This file provides guidance to Claude Code (claude.ai/code) when working with this sub-project.
 
 ## Project Overview
 
-**IRSB-Watchtower** - Universal watchtower service for the IRSB (Intent Receipts & Solver Bonds) protocol.
+**IRSB-Watchtower** (`@irsb/watchtower-*` packages) - Universal watchtower service for the IRSB (Intent Receipts & Solver Bonds) protocol.
 
 Off-chain monitoring and enforcement: watches IRSB contract events, detects violations via a deterministic rule engine, produces structured Findings, and optionally auto-acts (open disputes, submit evidence).
 

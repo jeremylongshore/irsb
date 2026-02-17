@@ -1,0 +1,28 @@
+# IRSB Monorepo Code Owners
+# These users will be requested for review when changes affect their areas
+
+# Default owner for everything
+* @jeremylongshore
+
+# Smart contracts
+/protocol/src/ @jeremylongshore
+/protocol/test/ @jeremylongshore
+/protocol/script/ @jeremylongshore
+
+# Protocol TypeScript packages
+/protocol/sdk/ @jeremylongshore
+/protocol/packages/ @jeremylongshore
+
+# Services
+/services/solver/ @jeremylongshore
+/services/watchtower/ @jeremylongshore
+/services/agents/ @jeremylongshore
+
+# Shared packages
+/packages/ @jeremylongshore
+
+# CI/CD and deployment
+/.github/ @jeremylongshore
+
+# Documentation
+*.md @jeremylongshore

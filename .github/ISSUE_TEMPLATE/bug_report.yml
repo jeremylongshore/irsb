@@ -10,6 +10,25 @@ body:
 
         **Security issues:** Do NOT use this form. See [SECURITY.md](../../SECURITY.md).
 
+  - type: dropdown
+    id: project
+    attributes:
+      label: Project
+      description: Which part of the monorepo is affected?
+      options:
+        - protocol (Solidity contracts)
+        - solver (TypeScript)
+        - watchtower (TypeScript)
+        - agents (Python)
+        - packages/kms-signer
+        - packages/types
+        - protocol/sdk
+        - protocol/packages/x402-irsb
+        - CI/CD / tooling
+        - other
+    validations:
+      required: true
+
   - type: textarea
     id: description
     attributes:
@@ -42,8 +61,8 @@ body:
     id: environment
     attributes:
       label: Environment
-      description: Network, commit hash, SDK version, etc.
-      placeholder: "Sepolia, commit abc123, SDK v1.0.0"
+      description: Network, commit hash, SDK version, Node version, etc.
+      placeholder: "Sepolia, commit abc123, Node 20, pnpm 9.15"
     validations:
       required: true
 

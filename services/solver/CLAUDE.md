@@ -1,18 +1,20 @@
 # CLAUDE.md — IRSB Solver (Reference Executor)
 
-> **AI Context**: For ecosystem-wide reference (contracts, deployments, concepts, glossary), see [../AI-CONTEXT.md](../AI-CONTEXT.md)
+> **Part of the IRSB monorepo** (`jeremylongshore/irsb`). See root CLAUDE.md for workspace overview.
+>
+> **AI Context**: For ecosystem-wide reference (contracts, deployments, concepts, glossary), see [../../AI-CONTEXT.md](../../AI-CONTEXT.md)
 
-This file defines how Claude Code must operate in this repo. Treat it as binding.
+This file defines how Claude Code must operate in this sub-project. Treat it as binding.
 
 ---
 
 ## 0) Project Summary
 
-**Repo:** `irsb-solver` | **Version:** v0.3.0
+**Package:** `@irsb/solver` | **Path:** `services/solver/` | **Version:** v0.3.0
 **Purpose:** Reference **solver/executor service** for the IRSB protocol. It consumes intents, runs allowed workflows off-chain, produces evidence, and submits receipts.
-**Related repos:**
-- `irsb-protocol` — on-chain contracts + schemas + settlement primitives
-- `irsb-watchtower` — indexing/monitoring/alerts/dashboards
+**Related sub-projects:**
+- `protocol/` — on-chain contracts + schemas + settlement primitives
+- `services/watchtower/` — indexing/monitoring/alerts/dashboards
 
 IRSB is **not an agent**. This repo is the actor implementation that uses IRSB.
 
@@ -136,7 +138,7 @@ PR description must include (required sections):
 - Docs changed/added (filenames in `000-docs/`)
 - Rollback notes (if applicable)
 
-Use `.github/pull_request_template.md`.
+Use the root `.github/pull_request_template.md`.
 
 ### 3.5 PR checks (required)
 PR cannot merge unless:

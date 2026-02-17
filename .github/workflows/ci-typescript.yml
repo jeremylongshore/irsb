@@ -6,8 +6,9 @@ on:
     paths:
       - 'services/solver/**'
       - 'services/watchtower/**'
-      - 'services/gateway/**'
       - 'packages/**'
+      - 'protocol/sdk/**'
+      - 'protocol/packages/**'
       - 'pnpm-workspace.yaml'
       - 'package.json'
       - 'tsconfig.base.json'
@@ -17,8 +18,9 @@ on:
     paths:
       - 'services/solver/**'
       - 'services/watchtower/**'
-      - 'services/gateway/**'
       - 'packages/**'
+      - 'protocol/sdk/**'
+      - 'protocol/packages/**'
       - 'pnpm-workspace.yaml'
       - 'package.json'
       - 'tsconfig.base.json'

@@ -8,6 +8,23 @@ body:
       value: |
         Thanks for suggesting a feature! Please describe your idea below.
 
+  - type: dropdown
+    id: project
+    attributes:
+      label: Project
+      description: Which part of the monorepo does this affect?
+      options:
+        - protocol (Solidity contracts)
+        - solver (TypeScript)
+        - watchtower (TypeScript)
+        - agents (Python)
+        - packages (shared)
+        - CI/CD / tooling
+        - cross-cutting (multiple projects)
+        - other
+    validations:
+      required: true
+
   - type: textarea
     id: problem
     attributes:
