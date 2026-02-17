@@ -42,11 +42,15 @@
   <rect x="460" y="148" width="280" height="3" rx="1.5" fill="url(#accent)" opacity="0.8"/>
 
   <!-- Tagline -->
-  <text x="600" y="190" text-anchor="middle" font-family="'Segoe UI', system-ui, -apple-system, sans-serif" font-size="22" font-weight="400" letter-spacing="3" fill="#e5e7eb">Intent Receipts &amp; Solver Bonds</text>
+  <text x="600" y="190" text-anchor="middle" font-family="'Segoe UI', system-ui, -apple-system, sans-serif" font-size="22" font-weight="400" letter-spacing="3" fill="#e5e7eb">On-Chain Guardrails for AI Agents</text>
 
   <!-- Subtitle -->
-  <text x="600" y="230" text-anchor="middle" font-family="'Segoe UI', system-ui, -apple-system, sans-serif" font-size="14" font-weight="300" letter-spacing="1.5" fill="#64748b">Ethereum's Accountability Layer for Intent-Based Transactions</text>
+  <text x="600" y="230" text-anchor="middle" font-family="'Segoe UI', system-ui, -apple-system, sans-serif" font-size="14" font-weight="300" letter-spacing="1.5" fill="#64748b">No agent should hold unguarded keys</text>
 
-  <!-- Decorative line bottom -->
-  <rect x="0" y="297" width="1200" height="3" fill="url(#accent)" opacity="0.6"/>
+  <!-- Decorative line bottom (animated) -->
+  <style>
+    @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+    .pulse-line { animation: pulse 3s ease-in-out infinite; }
+  </style>
+  <rect x="0" y="297" width="1200" height="3" fill="url(#accent)" class="pulse-line"/>
 </svg>

@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 100" width="800" height="100">
+  <defs>
+    <linearGradient id="ep-accent-l" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Agent Action -->
+  <rect x="4" y="30" width="100" height="40" rx="8" fill="#ffffff" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="54" y="55" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="600" fill="#0c1929">Agent Action</text>
+
+  <!-- Arrow 1 -->
+  <line x1="108" y1="50" x2="128" y2="50" stroke="#0284c7" stroke-width="1.5"/>
+  <polygon points="128,46 136,50 128,54" fill="#0284c7"/>
+
+  <!-- SpendLimit -->
+  <rect x="140" y="30" width="96" height="40" rx="8" fill="#ffffff" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="188" y="48" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="500" fill="#0284c7">Spend</text>
+  <text x="188" y="60" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="500" fill="#0284c7">Limit</text>
+
+  <!-- Arrow 2 -->
+  <line x1="240" y1="50" x2="256" y2="50" stroke="#0284c7" stroke-width="1.5"/>
+  <polygon points="256,46 264,50 256,54" fill="#0284c7"/>
+
+  <!-- TimeWindow -->
+  <rect x="268" y="30" width="96" height="40" rx="8" fill="#ffffff" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="316" y="48" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="500" fill="#0284c7">Time</text>
+  <text x="316" y="60" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="500" fill="#0284c7">Window</text>
+
+  <!-- Arrow 3 -->
+  <line x1="368" y1="50" x2="384" y2="50" stroke="#0284c7" stroke-width="1.5"/>
+  <polygon points="384,46 392,50 384,54" fill="#0284c7"/>
+
+  <!-- AllowedTargets -->
+  <rect x="396" y="30" width="96" height="40" rx="8" fill="#ffffff" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="444" y="48" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="500" fill="#0284c7">Allowed</text>
+  <text x="444" y="60" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="500" fill="#0284c7">Targets</text>
+
+  <!-- Arrow 4 -->
+  <line x1="496" y1="50" x2="512" y2="50" stroke="#0284c7" stroke-width="1.5"/>
+  <polygon points="512,46 520,50 512,54" fill="#0284c7"/>
+
+  <!-- AllowedMethods -->
+  <rect x="524" y="30" width="96" height="40" rx="8" fill="#ffffff" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="572" y="48" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="500" fill="#0284c7">Allowed</text>
+  <text x="572" y="60" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="500" fill="#0284c7">Methods</text>
+
+  <!-- Arrow 5 -->
+  <line x1="624" y1="50" x2="640" y2="50" stroke="#0284c7" stroke-width="1.5"/>
+  <polygon points="640,46 648,50 640,54" fill="#0284c7"/>
+
+  <!-- Nonce -->
+  <rect x="652" y="30" width="60" height="40" rx="8" fill="#ffffff" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="682" y="55" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="500" fill="#0284c7">Nonce</text>
+
+  <!-- Arrow 6 -->
+  <line x1="716" y1="50" x2="732" y2="50" stroke="#1e8449" stroke-width="1.5"/>
+  <polygon points="732,46 740,50 732,54" fill="#1e8449"/>
+
+  <!-- Execute + Receipt -->
+  <rect x="744" y="30" width="52" height="40" rx="8" fill="#ffffff" stroke="#1e8449" stroke-width="1.5"/>
+  <text x="770" y="48" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="8" font-weight="600" fill="#1e8449">Execute</text>
+  <text x="770" y="60" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="8" font-weight="600" fill="#1e8449">+ Receipt</text>
+
+  <!-- Labels -->
+  <text x="54" y="86" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="8" fill="#94a3b8">EIP-7702</text>
+  <text x="400" y="18" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="500" fill="#94a3b8">On-chain caveat enforcers — cannot be bypassed</text>
+</svg>
