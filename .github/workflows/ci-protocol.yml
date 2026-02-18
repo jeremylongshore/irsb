@@ -12,9 +12,6 @@ on:
       - 'protocol/**'
       - '.github/workflows/ci-protocol.yml'
 
-env:
-  FOUNDRY_PROFILE: ci
-
 jobs:
   contracts:
     name: Foundry Tests
@@ -35,10 +32,36 @@ jobs:
       - name: Build
         run: forge build --sizes
 
-      - name: Test
-        run: forge test -vvv
+      - name: Unit & integration tests
+        run: forge test --no-match-path "test/fuzz/*" --no-match-path "test/invariants/*"
 
-      - name: Coverage check (80% threshold)
+      - name: Fuzz tests (CI profile — 10k runs)
+        env:
+          FOUNDRY_PROFILE: ci
+        run: forge test --match-path "test/fuzz/*"
+
+      - name: Invariant tests (CI profile — 10k runs)
+        env:
+          FOUNDRY_PROFILE: ci
+        run: forge test --match-path "test/invariants/*"
+
+  coverage:
+    name: Coverage Check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: protocol
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+
+      - name: Coverage (80% threshold)
         run: |
           COVERAGE=$(forge coverage --ir-minimum --report summary 2>&1 | grep -E "^Lines:" | awk '{print $NF}' | tr -d '%')
           echo "Line coverage: ${COVERAGE}%"
@@ -46,9 +69,6 @@ jobs:
             echo "::error::Coverage ${COVERAGE}% is below 80% threshold"
             exit 1
           fi
-
-      - name: Gas report
-        run: forge test --gas-report
 
   lint:
     name: Solidity Lint
