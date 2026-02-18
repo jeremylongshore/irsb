@@ -12,9 +12,6 @@ import { MessageHashUtils } from "@openzeppelin/contracts/utils/cryptography/Mes
 /// @notice Invariant: receipt status can only move forward (Pending→Disputed→Finalized|Slashed)
 /// @dev Run with: FOUNDRY_PROFILE=ci forge test --match-contract ReceiptStatusInvariants
 contract ReceiptStatusInvariants is Test {
-    using ECDSA for bytes32;
-    using MessageHashUtils for bytes32;
-
     SolverRegistry public registry;
     IntentReceiptHub public hub;
     ReceiptStatusHandler public handler;
@@ -37,11 +34,7 @@ contract ReceiptStatusInvariants is Test {
             uint256 previousMax = handler.highWaterMark(receiptIds[i]);
 
             // Current status must be >= the highest status we've ever seen
-            assertGe(
-                uint256(currentStatus),
-                previousMax,
-                "Status regressed - monotonicity violation"
-            );
+            assertGe(uint256(currentStatus), previousMax, "Status regressed - monotonicity violation");
         }
     }
 
@@ -146,7 +139,7 @@ contract ReceiptStatusHandler is Test {
         // Warp past challenge window
         vm.warp(block.timestamp + 2 hours);
 
-        try hub.finalize(receiptId) {} catch {}
+        try hub.finalize(receiptId) { } catch { }
 
         _updateHighWaterMark(receiptId);
     }
@@ -163,8 +156,8 @@ contract ReceiptStatusHandler is Test {
         vm.deal(challenger, 1 ether);
 
         vm.prank(challenger);
-        try hub.openDispute{ value: 0.01 ether }(receiptId, Types.DisputeReason.Timeout, keccak256("evidence")) {}
-        catch {}
+        try hub.openDispute{ value: 0.01 ether }(receiptId, Types.DisputeReason.Timeout, keccak256("evidence")) { }
+            catch { }
 
         _updateHighWaterMark(receiptId);
     }

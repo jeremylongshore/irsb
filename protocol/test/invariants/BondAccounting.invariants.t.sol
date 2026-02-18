@@ -70,8 +70,8 @@ contract BondHandler is Test {
             solverIds.push(solverId);
             tracked[solverId] = true;
             solverOperators[solverId] = op;
+            registeredCount++;
         }
-        registeredCount++;
     }
 
     function depositBond(uint256 solverIndex, uint256 amount) public {

@@ -133,9 +133,7 @@ contract StateTransitionsTest is VerificationHelpers {
         vm.prank(operator);
         registry.depositBond{ value: 1 }(solverId);
 
-        verifyPostDeposit(
-            registry, solverId, MINIMUM_BOND, Types.SolverStatus.Active, totalBondedBefore + MINIMUM_BOND
-        );
+        verifyPostDeposit(registry, solverId, MINIMUM_BOND, Types.SolverStatus.Active, totalBondedBefore + MINIMUM_BOND);
     }
 
     /// @notice Verify ALL fields after slash from locked balance

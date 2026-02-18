@@ -128,9 +128,7 @@ contract RequireAuditTest is Test {
 
     function _openDispute(bytes32 receiptId) internal {
         vm.prank(challenger);
-        hub.openDispute{ value: hub.challengerBondMin() }(
-            receiptId, Types.DisputeReason.Timeout, keccak256("evidence")
-        );
+        hub.openDispute{ value: hub.challengerBondMin() }(receiptId, Types.DisputeReason.Timeout, keccak256("evidence"));
     }
 
     // ================================================================
@@ -288,9 +286,7 @@ contract RequireAuditTest is Test {
 
         vm.prank(challenger);
         vm.expectRevert(abi.encodeWithSignature("ReceiptNotFound()"));
-        hub.openDispute{ value: bondMin }(
-            fakeReceiptId, Types.DisputeReason.Timeout, keccak256("evidence")
-        );
+        hub.openDispute{ value: bondMin }(fakeReceiptId, Types.DisputeReason.Timeout, keccak256("evidence"));
     }
 
     /// @notice resolveEscalatedDispute reverts for non-dispute-module caller
@@ -494,9 +490,7 @@ contract RequireAuditTest is Test {
     function test_requireFail_EscrowVault_createEscrow_invalidDeadline() public {
         vm.warp(1000);
         vm.expectRevert(abi.encodeWithSignature("InvalidDeadline()"));
-        vault.createEscrow{ value: 1 ether }(
-            keccak256("e"), keccak256("r"), address(this), uint64(block.timestamp)
-        );
+        vault.createEscrow{ value: 1 ether }(keccak256("e"), keccak256("r"), address(this), uint64(block.timestamp));
     }
 
     /// @notice Unauthorized caller cannot release escrow
@@ -539,8 +533,7 @@ contract RequireAuditTest is Test {
         delegation.salt = 1;
 
         bytes32 structHash = TypesDelegation.hashDelegation(delegation);
-        bytes32 digest =
-            keccak256(abi.encodePacked("\x19\x01", walletDelegate.DOMAIN_SEPARATOR(), structHash));
+        bytes32 digest = keccak256(abi.encodePacked("\x19\x01", walletDelegate.DOMAIN_SEPARATOR(), structHash));
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(delegatorKey_, digest);
         delegation.signature = abi.encodePacked(r, s, v);
 
@@ -588,8 +581,7 @@ contract RequireAuditTest is Test {
         delegation.salt = 100;
 
         bytes32 structHash = TypesDelegation.hashDelegation(delegation);
-        bytes32 digest =
-            keccak256(abi.encodePacked("\x19\x01", walletDelegate.DOMAIN_SEPARATOR(), structHash));
+        bytes32 digest = keccak256(abi.encodePacked("\x19\x01", walletDelegate.DOMAIN_SEPARATOR(), structHash));
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(delegatorKey_, digest);
         delegation.signature = abi.encodePacked(r, s, v);
 
@@ -618,8 +610,7 @@ contract RequireAuditTest is Test {
         delegation.salt = 200;
 
         bytes32 structHash = TypesDelegation.hashDelegation(delegation);
-        bytes32 digest =
-            keccak256(abi.encodePacked("\x19\x01", walletDelegate.DOMAIN_SEPARATOR(), structHash));
+        bytes32 digest = keccak256(abi.encodePacked("\x19\x01", walletDelegate.DOMAIN_SEPARATOR(), structHash));
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(delegatorKey_, digest);
         delegation.signature = abi.encodePacked(r, s, v);
 

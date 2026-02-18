@@ -35,7 +35,7 @@ contract RevocationPermanenceInvariants is Test {
         uint256 revoked = handler.revokedCount();
         uint256 total = handler.totalSetup();
 
-        assertLe(active + revoked, total, "Active + revoked > total setup");
+        assertEq(active + revoked, total, "Active + revoked != total setup");
     }
 }
 
@@ -81,9 +81,7 @@ contract RevocationHandler is Test {
 
         // Sign
         bytes32 delegationHash = TypesDelegation.hashDelegation(d);
-        bytes32 digest = keccak256(
-            abi.encodePacked("\x19\x01", delegate.DOMAIN_SEPARATOR(), delegationHash)
-        );
+        bytes32 digest = keccak256(abi.encodePacked("\x19\x01", delegate.DOMAIN_SEPARATOR(), delegationHash));
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(privKey, digest);
         d.signature = abi.encodePacked(r, s, v);
 
@@ -94,7 +92,7 @@ contract RevocationHandler is Test {
             delegatorKeys[delegationHash] = privKey;
             activeCount++;
             totalSetup++;
-        } catch {}
+        } catch { }
     }
 
     /// @notice Revoke an existing delegation
@@ -113,20 +111,22 @@ contract RevocationHandler is Test {
             revokedHashes.push(hash);
             revokedCount++;
             if (activeCount > 0) activeCount--;
-        } catch {}
+        } catch { }
     }
 
-    /// @notice Attempt to execute a delegation (should fail if revoked)
+    /// @notice Attempt to execute a delegation (must fail if revoked)
     function tryExecute(uint256 index) public {
         if (delegationHashes.length == 0) return;
         index = bound(index, 0, delegationHashes.length - 1);
 
         bytes32 hash = delegationHashes[index];
 
-        // Try to execute — if revoked, this must revert
-        try delegate.executeDelegated(hash, address(0x1), "", 0) {}
-        catch {
-            // Expected for revoked delegations
+        // Try to execute - if it succeeds for a revoked delegation, that's a bug
+        try delegate.executeDelegated(hash, address(0x1), "", 0) {
+            // Execution succeeded - this must NOT be a revoked delegation
+            assertFalse(isRevoked[hash], "Revoked delegation executed successfully");
+        } catch {
+            // Expected for revoked delegations (and possibly non-revoked ones too)
         }
     }
 

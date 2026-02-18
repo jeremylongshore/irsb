@@ -7,4 +7,5 @@ pragma solidity ^0.8.25;
 contract MockETHRejecter {
     // Intentionally no receive() or fallback()
     // Any ETH sent to this contract will revert
-}
+
+    }

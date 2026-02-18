@@ -273,17 +273,13 @@ contract BoundaryTestsTest is Test {
     function test_boundary_EscrowVault_deadline_currentTimestamp() public {
         vm.warp(1000);
         vm.expectRevert(abi.encodeWithSignature("InvalidDeadline()"));
-        vault.createEscrow{ value: 1 ether }(
-            keccak256("e"), keccak256("r"), address(this), uint64(block.timestamp)
-        );
+        vault.createEscrow{ value: 1 ether }(keccak256("e"), keccak256("r"), address(this), uint64(block.timestamp));
     }
 
     /// @notice deadline == block.timestamp + 1: passes (minimum valid)
     function test_boundary_EscrowVault_deadline_currentPlusOne() public {
         vm.warp(1000);
-        vault.createEscrow{ value: 1 ether }(
-            keccak256("e"), keccak256("r"), address(this), uint64(block.timestamp + 1)
-        );
+        vault.createEscrow{ value: 1 ether }(keccak256("e"), keccak256("r"), address(this), uint64(block.timestamp + 1));
 
         IEscrowVault.Escrow memory escrow = vault.getEscrow(keccak256("e"));
         assertEq(uint256(escrow.status), uint256(IEscrowVault.EscrowStatus.Active));

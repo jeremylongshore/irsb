@@ -63,9 +63,9 @@ contract DeployTimelock is Script {
 
         TimelockController timelock = new TimelockController(
             MIN_DELAY,
-            proposers,    // Safe can propose
-            executors,    // Safe can execute
-            address(0)    // No admin (timelock self-administers)
+            proposers, // Safe can propose
+            executors, // Safe can execute
+            address(0) // No admin (timelock self-administers)
         );
         console.log("      TimelockController deployed at:", address(timelock));
         console.log("");
