@@ -141,7 +141,7 @@ contract ModifierTestsTest is Test {
             _createSignedReceipt(keccak256("intent"), uint64(block.timestamp + 1 hours));
 
         vm.prank(operator);
-        bytes32 receiptId = hub.postReceipt(receipt);
+        bytes32 receiptId = hub.postReceipt(receipt, 0);
 
         // finalize uses receiptExists - check we get ChallengeWindowActive (not ReceiptNotFound)
         vm.expectRevert(abi.encodeWithSignature("ChallengeWindowActive()"));
@@ -252,7 +252,7 @@ contract ModifierTestsTest is Test {
             _createSignedReceipt(keccak256("intent2"), uint64(block.timestamp + 1 hours));
 
         vm.prank(operator);
-        bytes32 receiptId = hub.postReceipt(receipt);
+        bytes32 receiptId = hub.postReceipt(receipt, 0);
 
         // Call from dispute module - will fail with ReceiptNotPending (past modifier)
         vm.prank(address(disputeModule));
@@ -266,7 +266,7 @@ contract ModifierTestsTest is Test {
             _createSignedReceipt(keccak256("intent3"), uint64(block.timestamp + 1 hours));
 
         vm.prank(operator);
-        bytes32 receiptId = hub.postReceipt(receipt);
+        bytes32 receiptId = hub.postReceipt(receipt, 0);
 
         // Owner can call onlyDisputeModule functions - will fail with ReceiptNotPending
         vm.expectRevert(abi.encodeWithSignature("ReceiptNotPending()"));
@@ -279,7 +279,7 @@ contract ModifierTestsTest is Test {
             _createSignedReceipt(keccak256("intent4"), uint64(block.timestamp + 1 hours));
 
         vm.prank(operator);
-        bytes32 receiptId = hub.postReceipt(receipt);
+        bytes32 receiptId = hub.postReceipt(receipt, 0);
 
         vm.prank(unauthorized);
         vm.expectRevert("Not dispute module");

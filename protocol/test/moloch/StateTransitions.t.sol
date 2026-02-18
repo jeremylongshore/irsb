@@ -200,7 +200,7 @@ contract StateTransitionsTest is VerificationHelpers {
         Types.IntentReceipt memory receipt = _createSignedReceipt(solverId, intentHash, expiry);
 
         vm.prank(operator);
-        bytes32 receiptId = hub.postReceipt(receipt);
+        bytes32 receiptId = hub.postReceipt(receipt, 0);
 
         // Verify Pending state
         (, Types.ReceiptStatus status) = hub.getReceipt(receiptId);
@@ -229,7 +229,7 @@ contract StateTransitionsTest is VerificationHelpers {
         Types.IntentReceipt memory receipt = _createSignedReceipt(solverId, intentHash, expiry);
 
         vm.prank(operator);
-        bytes32 receiptId = hub.postReceipt(receipt);
+        bytes32 receiptId = hub.postReceipt(receipt, 0);
 
         // Open dispute
         uint256 challengerBond = hub.challengerBondMin();

@@ -123,7 +123,7 @@ contract RequireAuditTest is Test {
     function _postReceipt(bytes32 intentHash, uint64 expiry) internal returns (bytes32 receiptId) {
         Types.IntentReceipt memory receipt = _createSignedReceipt(intentHash, expiry);
         vm.prank(operator);
-        receiptId = hub.postReceipt(receipt);
+        receiptId = hub.postReceipt(receipt, 0);
     }
 
     function _openDispute(bytes32 receiptId) internal {
@@ -267,7 +267,8 @@ contract RequireAuditTest is Test {
 
         vm.prank(operator);
         vm.expectRevert("Empty batch");
-        hub.batchPostReceipts(empty);
+        uint256[] memory emptyVolumes = new uint256[](0);
+        hub.batchPostReceipts(empty, emptyVolumes);
     }
 
     /// @notice batchPostReceipts reverts when array exceeds MAX_BATCH_SIZE (51)
@@ -276,7 +277,8 @@ contract RequireAuditTest is Test {
 
         vm.prank(operator);
         vm.expectRevert("Batch too large");
-        hub.batchPostReceipts(big);
+        uint256[] memory bigVolumes = new uint256[](51);
+        hub.batchPostReceipts(big, bigVolumes);
     }
 
     /// @notice openDispute reverts on non-existent receipt ID

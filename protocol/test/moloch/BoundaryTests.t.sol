@@ -190,7 +190,8 @@ contract BoundaryTestsTest is Test {
 
         vm.prank(operator);
         vm.expectRevert("Empty batch");
-        hub.batchPostReceipts(empty);
+        uint256[] memory emptyVolumes = new uint256[](0);
+        hub.batchPostReceipts(empty, emptyVolumes);
     }
 
     /// @notice 1 item: valid minimum batch
@@ -201,7 +202,8 @@ contract BoundaryTestsTest is Test {
         batch[0] = _createSignedReceipt(solverId, keccak256("intent1"), uint64(block.timestamp + 1 hours));
 
         vm.prank(operator);
-        bytes32[] memory ids = hub.batchPostReceipts(batch);
+        uint256[] memory volumes = new uint256[](1);
+        bytes32[] memory ids = hub.batchPostReceipts(batch, volumes);
         assertEq(ids.length, 1);
         assertTrue(ids[0] != bytes32(0));
     }
@@ -248,7 +250,8 @@ contract BoundaryTestsTest is Test {
         }
 
         vm.prank(operator);
-        bytes32[] memory ids = hub.batchPostReceipts(batch);
+        uint256[] memory batchVolumes = new uint256[](50);
+        bytes32[] memory ids = hub.batchPostReceipts(batch, batchVolumes);
         assertEq(ids.length, 50);
     }
 
@@ -258,7 +261,8 @@ contract BoundaryTestsTest is Test {
 
         vm.prank(operator);
         vm.expectRevert("Batch too large");
-        hub.batchPostReceipts(batch);
+        uint256[] memory bigVolumes = new uint256[](51);
+        hub.batchPostReceipts(batch, bigVolumes);
     }
 
     // ================================================================
@@ -296,7 +300,7 @@ contract BoundaryTestsTest is Test {
             _createSignedReceipt(solverId, keccak256("intent"), uint64(block.timestamp + 1 hours));
 
         vm.prank(operator);
-        bytes32 receiptId = hub.postReceipt(receipt);
+        bytes32 receiptId = hub.postReceipt(receipt, 0);
 
         uint64 windowEnd = receipt.createdAt + hub.challengeWindow();
         vm.warp(windowEnd);
@@ -312,7 +316,7 @@ contract BoundaryTestsTest is Test {
             _createSignedReceipt(solverId, keccak256("intent2"), uint64(block.timestamp + 1 hours));
 
         vm.prank(operator);
-        bytes32 receiptId = hub.postReceipt(receipt);
+        bytes32 receiptId = hub.postReceipt(receipt, 0);
 
         uint64 windowEnd = receipt.createdAt + hub.challengeWindow();
         vm.warp(windowEnd + 1);
@@ -466,7 +470,7 @@ contract BoundaryTestsTest is Test {
             _createSignedReceipt(solverId, keccak256("intent3"), uint64(block.timestamp + 1 hours));
 
         vm.prank(operator);
-        bytes32 receiptId = hub.postReceipt(receipt);
+        bytes32 receiptId = hub.postReceipt(receipt, 0);
 
         uint256 bondMin = hub.challengerBondMin();
         vm.prank(challenger);
@@ -482,7 +486,7 @@ contract BoundaryTestsTest is Test {
             _createSignedReceipt(solverId, keccak256("intent4"), uint64(block.timestamp + 1 hours));
 
         vm.prank(operator);
-        bytes32 receiptId = hub.postReceipt(receipt);
+        bytes32 receiptId = hub.postReceipt(receipt, 0);
 
         uint256 bondMin = hub.challengerBondMin();
         vm.prank(challenger);

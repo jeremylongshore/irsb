@@ -21,7 +21,7 @@ contract DisputeModuleInvariants is Test {
     function setUp() public {
         registry = new SolverRegistry();
         hub = new IntentReceiptHub(address(registry));
-        disputeModule = new DisputeModule(address(registry), address(hub), arbitrator);
+        disputeModule = new DisputeModule(address(hub), address(registry), arbitrator);
 
         // Authorize contracts
         registry.setAuthorizedCaller(address(hub), true);
