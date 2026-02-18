@@ -144,6 +144,7 @@ contract DisputeModule is IDisputeModule, Ownable, ReentrancyGuard, Pausable {
     function resolve(bytes32 disputeId, bool solverFault, uint8 slashPercentage, string calldata reason)
         external
         onlyArbitrator
+        whenNotPaused
         nonReentrant
     {
         if (slashPercentage > 100) revert InvalidResolution();
@@ -211,7 +212,7 @@ contract DisputeModule is IDisputeModule, Ownable, ReentrancyGuard, Pausable {
 
     /// @notice Resolve dispute after arbitration timeout (default: solver not at fault)
     /// @param disputeId Dispute to resolve via timeout
-    function resolveByTimeout(bytes32 disputeId) external nonReentrant {
+    function resolveByTimeout(bytes32 disputeId) external whenNotPaused nonReentrant {
         require(_escalated[disputeId], "Not escalated");
 
         uint64 escalatedAt = _escalatedAt[disputeId];
