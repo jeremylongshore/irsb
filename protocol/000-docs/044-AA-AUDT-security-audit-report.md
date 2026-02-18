@@ -45,7 +45,7 @@ All 11 contracts verified on Sepolia Etherscan. Source code matches repository. 
 
 | Metric | Value |
 |--------|-------|
-| Total tests | 552+ (Foundry) |
+| Total tests | 564 (Foundry) + 9 invariant tests (6 suites) |
 | Fuzz tests | CI profile runs 10k iterations |
 | Invariant suites | 6 (SolverRegistry, IntentReceiptHub, DisputeModule, BondAccounting, ReceiptStatus, RevocationPermanence) |
 | Moloch-pattern tests | Boundary, Modifier, StateTransition, RequireAudit |
@@ -60,7 +60,7 @@ Coverage report generated via `forge coverage` (see Section D).
 | Internal pre-mortem (83 findings) | Complete — `039-AA-AUDT-pre-mortem-analysis.md` |
 | This security audit | Complete — you're reading it |
 | Professional firm (Code4rena/Spearbit) | Planned Q2 2026 |
-| Slither static analysis | Attempted (see Section D) |
+| Slither v0.11.5 | Complete — 192 results triaged, 3 high (all by-design), 0 net-new critical |
 
 ### Q5: "Why is the arbitrator the deployer EOA?"
 
@@ -158,10 +158,12 @@ All stateful contracts use `ReentrancyGuard`. CEI pattern followed in EscrowVaul
 
 ### D1. Forge Test Results
 
-All tests compiled and run against the protocol directory. Test suite includes:
+**564 tests passed, 0 failed, 0 skipped** across 38 test suites (excluding invariant tests which run separately).
+
+Test suite includes:
 - Core unit tests (SolverRegistry, IntentReceiptHub, DisputeModule, EscrowVault, WalletDelegate, X402Facilitator)
-- Fuzz tests (10k runs in CI profile)
-- Invariant tests (6 suites including 3 new from this audit)
+- Fuzz tests (256 runs default, 10k in CI profile)
+- Invariant tests (6 suites, 256 runs × 500 calls each)
 - Moloch-pattern tests (Boundary, Modifier, StateTransition, RequireAudit)
 - Enforcer tests (SpendLimit, TimeWindow, AllowedTargets, AllowedMethods, Nonce)
 
@@ -169,17 +171,59 @@ All tests compiled and run against the protocol directory. Test suite includes:
 1. Moloch tests calling `postReceipt(receipt)` → `postReceipt(receipt, 0)` (volume parameter added in PM-EC-001)
 2. Moloch tests calling `batchPostReceipts(batch)` → `batchPostReceipts(batch, volumes)` (same fix)
 3. DisputeModule invariant test constructor args swapped (was `registry, hub` → now `hub, registry`)
+4. DisputeModule invariant handler: added nonce to message hash, high water mark tracking, try/catch for openDispute
+5. BondAccounting invariant handler: moved `registeredCount++` inside tracked guard
+6. RevocationPermanence invariant: `assertEq` instead of `assertLe` for exact count
+7. Extended `whenNotPaused` to `resolve()` and `resolveByTimeout()` in DisputeModule
 
 ### D2. Forge Coverage
 
-Coverage report generated via `forge coverage`. Key observations:
-- Core contracts (SolverRegistry, IntentReceiptHub, DisputeModule) have high coverage from combined unit + fuzz + invariant testing
-- Delegation contracts (WalletDelegate, enforcers) covered by dedicated test suites
-- EscrowVault has solid coverage including ERC20 path tests
+Coverage generated via `forge coverage --ir-minimum` (required due to stack depth):
+
+| Contract | Lines | Statements | Branches | Functions |
+|----------|-------|------------|----------|-----------|
+| **SolverRegistry** | **95.40%** (166/174) | 93.79% | 55.77% | 96.88% |
+| **IntentReceiptHub** | **91.47%** (193/211) | 87.30% | 46.67% | 96.43% |
+| **DisputeModule** | **87.79%** (115/131) | 88.74% | 42.86% | 86.36% |
+| **EscrowVault** | **93.42%** (71/76) | 91.95% | **100.00%** | 93.33% |
+| **X402Facilitator** | **91.07%** (51/56) | 87.72% | 64.29% | 90.00% |
+| **WalletDelegate** | **86.25%** (69/80) | 85.71% | 75.00% | **100.00%** |
+| **OptimisticDisputeModule** | **90.77%** (177/195) | 84.44% | 52.94% | 93.33% |
+| **ReceiptV2Extension** | **82.52%** (118/143) | 82.21% | 31.48% | 80.77% |
+| **CredibilityRegistry** | **76.34%** (142/186) | 71.43% | 43.90% | 83.33% |
+| SpendLimitEnforcer | 91.18% | 95.12% | **100.00%** | 75.00% |
+| AcrossAdapter | **97.59%** (81/83) | 97.50% | 76.47% | **100.00%** |
+
+All core contracts exceed 80% line coverage. Branch coverage is lower (expected for Solidity — many error paths are assert/require guards).
 
 ### D3. Slither Static Analysis
 
-Slither analysis was attempted. Dependencies were installed from the existing protocol lib directory. Results pending full environment setup.
+**Slither v0.11.5** — 192 results across 60 contracts (including OpenZeppelin library code).
+
+**High Severity (IRSB code only):**
+
+| # | Detector | Finding | Assessment |
+|---|----------|---------|------------|
+| 1 | `arbitrary-send-erc20` | `X402Facilitator.settlePayment()` uses arbitrary `from` in `transferFrom` | **By design** — buyer pays seller via facilitator. Caller-controlled `params.buyer`. |
+| 2 | `arbitrary-send-eth` | `WalletDelegate.executeDelegated()` sends ETH to arbitrary user | **By design** — delegation execution target is signer-controlled via EIP-712 sig. |
+| 3 | `reentrancy-eth` | `SolverRegistry.slash()` writes `solver.status` after external call | **Acknowledged** — `nonReentrant` guard present. State write after `_publishToERC8004` callback is cosmetic (status already effectively updated). |
+
+**Medium Severity (IRSB code only):**
+
+| # | Detector | Finding | Assessment |
+|---|----------|---------|------------|
+| 1 | `reentrancy-no-eth` | Multiple reentrancy-benign patterns in Hub, OptimisticDispute | **Protected** — all functions use `nonReentrant`. Counter/event writes after calls are informational. |
+| 2 | `weak-prng` | `SolverRegistry.getDecayMultiplier()` uses `%` | **False positive** — modulo for decay math, not randomness. |
+
+**Low/Informational (triaged, not actionable):**
+- `timestamp`: 30+ findings — all are legitimate time-based logic (challenge windows, cooldowns, deadlines)
+- `low-level-calls`: 16 findings — all ETH transfers via `.call{value:}()` (standard pattern, checked return)
+- `dead-code`: `OptimisticDisputeModule._transferETH()` — unused helper, can be removed (P3)
+- `costly-loop`: `batchPostReceipts` and `batchSettle` — batch size is caller-controlled, acceptable
+- `assembly`: All in OpenZeppelin libraries (not IRSB code)
+
+**Net-new finding from Slither (not in pre-mortem):**
+- `OptimisticDisputeModule._transferETH()` dead code — added to P3 remediation backlog.
 
 ### D4. Fuzz Results (CI Profile, 10k Runs)
 
