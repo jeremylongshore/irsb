@@ -24,6 +24,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Protocol (Foundry/Solidity)
 
 ```bash
+# IMPORTANT: Always set PATH before forge/cast commands
+export PATH="/home/jeremy/.foundry/bin:$PATH"
+
 cd protocol/
 forge build                           # Compile (via_ir, optimizer 200 runs)
 forge test                            # All 552 tests
@@ -112,6 +115,31 @@ pnpm dev                # tsx watch src/server/gateway.ts
 
 Tests in separate `test/` directory with subdirs: `unit/`, `integration/`, `security/`
 
+### Agents (Python)
+
+```bash
+cd services/agents/
+python -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+
+pytest tests/ -v              # All tests
+pytest tests/ -v -k "test_verifier"  # Single test by name
+ruff check .                  # Lint
+mypy shared/ --ignore-missing-imports  # Type check
+uvicorn api.server:app --reload       # Run API (requires Ollama)
+python -m shared.corpus.ingestor      # Index IRSB corpus
+docker compose up                     # Ollama + API (local dev)
+```
+
+Tests in `tests/` directory. Uses pytest with asyncio_mode=auto.
+
+## Shell Gotchas
+
+- **`cd` triggers zoxide** (`__zoxide_z`) which fails in non-interactive shells. Use `builtin cd` or `--root` flag for forge commands.
+- **Always export Foundry PATH**: `export PATH="/home/jeremy/.foundry/bin:$PATH"` before `forge`/`cast`.
+- **Source `.env`** with `source .env 2>/dev/null` or export vars explicitly.
+- **`forge script`** requires contract name: `forge script script/Foo.s.sol:ContractName`
+
 ## Architecture
 
 ```text
@@ -182,6 +210,15 @@ When contract interfaces change:
 ## Documentation
 
 Each project has a flat `000-docs/` directory (no subdirectories). Files follow naming convention: `NNN-CC-ABCD-short-description.md` (CC = category code like DR/AT/OD).
+
+## Intentions Gateway (Planned)
+
+Unifying Web2 MCP governance + Web3 on-chain enforcement. See `000-docs/040-AT-ARCH-intentions-gateway-architecture.md` for the full architecture doc.
+
+- **Policy engine**: Cedar (42-60x faster than OPA, sub-ms evaluation)
+- **New services**: `services/gateway/`, `policy-admin/`, `audit-vault/` — all calling INTO existing IRSB contracts
+- **Data store**: Firestore (MVP), Spanner upgrade path at >50K/min
+- **Runtime**: Cloud Run everywhere
 
 ## GitHub Repository
 
