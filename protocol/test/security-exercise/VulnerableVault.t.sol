@@ -1,15 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.25;
 
-import {Test, console} from "forge-std/Test.sol";
-import {VulnerableVault} from "./VulnerableVault.sol";
-import {SecureVault} from "./SecureVault.sol";
-import {
-    ReentrancyAttacker,
-    ReentrancyAttackerSecure,
-    FlashLoanAttacker,
-    MockLendingPool
-} from "./Attacker.sol";
+import { Test, console } from "forge-std/Test.sol";
+import { VulnerableVault } from "./VulnerableVault.sol";
+import { SecureVault } from "./SecureVault.sol";
+import { ReentrancyAttacker, ReentrancyAttackerSecure, FlashLoanAttacker, MockLendingPool } from "./Attacker.sol";
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Section 1: Reentrancy Exploit & Fix
@@ -30,7 +25,7 @@ contract ReentrancyExploitTest is Test {
         // Alice deposits 5 ETH
         vm.deal(alice, 5 ether);
         vm.prank(alice);
-        vault.deposit{value: 5 ether}(ALICE_ID);
+        vault.deposit{ value: 5 ether }(ALICE_ID);
 
         // Attacker deploys their contract
         attacker = new ReentrancyAttacker(address(vault));
@@ -43,7 +38,7 @@ contract ReentrancyExploitTest is Test {
 
         // Attacker deposits 1 ETH and triggers reentrant withdrawal
         vm.deal(address(this), 1 ether);
-        attacker.attack{value: 1 ether}(ATTACKER_ID, 5);
+        attacker.attack{ value: 1 ether }(ATTACKER_ID, 5);
 
         // Vault is drained — attacker stole Alice's funds
         assertEq(address(vault).balance, 0);
@@ -67,7 +62,7 @@ contract ReentrancyFixTest is Test {
 
         vm.deal(alice, 5 ether);
         vm.prank(alice);
-        vault.deposit{value: 5 ether}(ALICE_ID);
+        vault.deposit{ value: 5 ether }(ALICE_ID);
 
         attacker = new ReentrancyAttackerSecure(address(vault));
     }
@@ -85,7 +80,7 @@ contract ReentrancyFixTest is Test {
         // 2. The revert propagates through the ETH transfer, failing the first withdraw()
         // 3. The entire attack() transaction reverts, rolling back the deposit too
         vm.expectRevert("Transfer failed");
-        attacker.attack{value: 1 ether}(ATTACKER_ID);
+        attacker.attack{ value: 1 ether }(ATTACKER_ID);
 
         // Alice's 5 ETH is completely safe — the attack was fully rolled back
         assertEq(address(vault).balance, 5 ether, "Alice's funds should be safe");
@@ -157,7 +152,7 @@ contract FlashLoanFixTest is Test {
         // Must send actual ETH as bond
         vm.deal(solver, 2 ether);
         vm.prank(solver);
-        vault.registerSolver{value: 1 ether}(SOLVER_ID);
+        vault.registerSolver{ value: 1 ether }(SOLVER_ID);
 
         assertTrue(vault.registeredSolvers(SOLVER_ID));
         assertEq(vault.depositedBonds(SOLVER_ID), 1 ether, "Bond tracked internally");
@@ -180,7 +175,7 @@ contract OverflowExploitTest is Test {
 
         // Fund the reward pool with 5 ETH
         vm.deal(address(this), 5 ether);
-        vault.fundRewardPool{value: 5 ether}();
+        vault.fundRewardPool{ value: 5 ether }();
     }
 
     /// @notice Exploit: Carefully chosen `amount` causes overflow in unchecked block,
@@ -223,7 +218,7 @@ contract OverflowFixTest is Test {
         vault = new SecureVault(makeAddr("treasury"));
 
         vm.deal(address(this), 5 ether);
-        vault.fundRewardPool{value: 5 ether}();
+        vault.fundRewardPool{ value: 5 ether }();
     }
 
     /// @notice Fix: SecureVault uses checked arithmetic (Solidity 0.8 default).
@@ -260,7 +255,7 @@ contract AccessControlExploitTest is Test {
 
         // Fund forfeited bonds
         vm.deal(address(this), 3 ether);
-        vault.addForfeitedBonds{value: 3 ether}();
+        vault.addForfeitedBonds{ value: 3 ether }();
     }
 
     /// @notice Exploit: Anyone can call setTreasury(), redirecting sweepBonds() funds.
@@ -294,7 +289,7 @@ contract AccessControlExploitTest is Test {
         vm.deal(owner, 1 ether);
         vm.prank(owner);
         vm.expectRevert("Paused");
-        vault.deposit{value: 1 ether}(keccak256("test"));
+        vault.deposit{ value: 1 ether }(keccak256("test"));
 
         console.log("[EXPLOIT] Access Control: Attacker paused entire contract (DoS)");
     }
@@ -313,7 +308,7 @@ contract AccessControlFixTest is Test {
         vault = new SecureVault(legitimateTreasury);
 
         vm.deal(address(this), 3 ether);
-        vault.addForfeitedBonds{value: 3 ether}();
+        vault.addForfeitedBonds{ value: 3 ether }();
     }
 
     /// @notice Fix: onlyOwner modifier blocks unauthorized callers.

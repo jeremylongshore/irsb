@@ -40,7 +40,7 @@ jobs:
 
       - name: Coverage check (80% threshold)
         run: |
-          COVERAGE=$(forge coverage --report summary 2>&1 | grep -E "^Lines:" | awk '{print $NF}' | tr -d '%')
+          COVERAGE=$(forge coverage --ir-minimum --report summary 2>&1 | grep -E "^Lines:" | awk '{print $NF}' | tr -d '%')
           echo "Line coverage: ${COVERAGE}%"
           if [ -n "$COVERAGE" ] && (( $(echo "$COVERAGE < 80" | bc -l) )); then
             echo "::error::Coverage ${COVERAGE}% is below 80% threshold"
@@ -70,9 +70,6 @@ jobs:
   sdk:
     name: Protocol SDK
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: protocol/sdk
     steps:
       - uses: actions/checkout@v4
 
@@ -83,5 +80,5 @@ jobs:
           cache: 'pnpm'
 
       - run: pnpm install --frozen-lockfile
-      - run: pnpm build
-      - run: pnpm typecheck || true
+      - run: pnpm --filter @irsb/sdk build
+      - run: pnpm --filter @irsb/sdk typecheck || true

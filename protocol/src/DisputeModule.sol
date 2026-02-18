@@ -3,6 +3,7 @@ pragma solidity ^0.8.25;
 
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 import { ReentrancyGuard } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import { Pausable } from "@openzeppelin/contracts/utils/Pausable.sol";
 import { IDisputeModule } from "./interfaces/IDisputeModule.sol";
 import { IIntentReceiptHub } from "./interfaces/IIntentReceiptHub.sol";
 import { ISolverRegistry } from "./interfaces/ISolverRegistry.sol";
@@ -11,7 +12,7 @@ import { Types } from "./libraries/Types.sol";
 /// @title DisputeModule
 /// @notice Pluggable dispute resolution for subjective cases (v0.2)
 /// @dev Handles evidence submission, escalation, and arbitration
-contract DisputeModule is IDisputeModule, Ownable, ReentrancyGuard {
+contract DisputeModule is IDisputeModule, Ownable, ReentrancyGuard, Pausable {
     // ============ Constants ============
 
     /// @notice Evidence submission window after dispute opening
@@ -84,7 +85,7 @@ contract DisputeModule is IDisputeModule, Ownable, ReentrancyGuard {
     // ============ External Functions ============
 
     /// @inheritdoc IDisputeModule
-    function submitEvidence(bytes32 disputeId, bytes32 evidenceHash) external {
+    function submitEvidence(bytes32 disputeId, bytes32 evidenceHash) external whenNotPaused {
         Types.Dispute memory dispute = receiptHub.getDispute(disputeId);
 
         // Only parties can submit evidence
@@ -108,7 +109,7 @@ contract DisputeModule is IDisputeModule, Ownable, ReentrancyGuard {
 
     /// @inheritdoc IDisputeModule
     /// @dev IRSB-SEC-002: Only dispute parties (challenger or solver) can escalate
-    function escalate(bytes32 disputeId) external payable nonReentrant {
+    function escalate(bytes32 disputeId) external payable whenNotPaused nonReentrant {
         Types.Dispute memory dispute = receiptHub.getDispute(disputeId);
 
         // IRSB-SEC-002: Only dispute parties can escalate to prevent DoS/griefing
@@ -143,6 +144,7 @@ contract DisputeModule is IDisputeModule, Ownable, ReentrancyGuard {
     function resolve(bytes32 disputeId, bool solverFault, uint8 slashPercentage, string calldata reason)
         external
         onlyArbitrator
+        whenNotPaused
         nonReentrant
     {
         if (slashPercentage > 100) revert InvalidResolution();
@@ -210,7 +212,7 @@ contract DisputeModule is IDisputeModule, Ownable, ReentrancyGuard {
 
     /// @notice Resolve dispute after arbitration timeout (default: solver not at fault)
     /// @param disputeId Dispute to resolve via timeout
-    function resolveByTimeout(bytes32 disputeId) external nonReentrant {
+    function resolveByTimeout(bytes32 disputeId) external whenNotPaused nonReentrant {
         require(_escalated[disputeId], "Not escalated");
 
         uint64 escalatedAt = _escalatedAt[disputeId];
@@ -347,6 +349,16 @@ contract DisputeModule is IDisputeModule, Ownable, ReentrancyGuard {
         if (!success) revert FeeWithdrawalFailed();
 
         emit FeesWithdrawn(treasury, amount);
+    }
+
+    /// @notice Emergency pause
+    function pause() external onlyOwner {
+        _pause();
+    }
+
+    /// @notice Unpause
+    function unpause() external onlyOwner {
+        _unpause();
     }
 
     /// @notice Receive ETH for arbitration fees

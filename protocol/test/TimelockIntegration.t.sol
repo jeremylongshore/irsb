@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.25;
 
-import {Test} from "forge-std/Test.sol";
-import {TimelockController} from "@openzeppelin/contracts/governance/TimelockController.sol";
-import {SolverRegistry} from "../src/SolverRegistry.sol";
-import {IntentReceiptHub} from "../src/IntentReceiptHub.sol";
+import { Test } from "forge-std/Test.sol";
+import { TimelockController } from "@openzeppelin/contracts/governance/TimelockController.sol";
+import { SolverRegistry } from "../src/SolverRegistry.sol";
+import { IntentReceiptHub } from "../src/IntentReceiptHub.sol";
 
 contract TimelockIntegrationTest is Test {
     TimelockController public timelock;
@@ -34,9 +34,7 @@ contract TimelockIntegrationTest is Test {
 
     function test_DirectAdminCallReverts() public {
         // Direct admin call should revert since owner is now timelock
-        vm.expectRevert(
-            abi.encodeWithSignature("OwnableUnauthorizedAccount(address)", address(this))
-        );
+        vm.expectRevert(abi.encodeWithSignature("OwnableUnauthorizedAccount(address)", address(this)));
         registry.setAuthorizedCaller(address(0x123), true);
     }
 
@@ -46,8 +44,7 @@ contract TimelockIntegrationTest is Test {
         // Prepare operation
         address target = address(registry);
         uint256 value = 0;
-        bytes memory data =
-            abi.encodeWithSelector(SolverRegistry.setAuthorizedCaller.selector, caller, true);
+        bytes memory data = abi.encodeWithSelector(SolverRegistry.setAuthorizedCaller.selector, caller, true);
         bytes32 predecessor = bytes32(0);
         bytes32 salt = bytes32(0);
 
@@ -70,8 +67,7 @@ contract TimelockIntegrationTest is Test {
         // Prepare operation
         address target = address(registry);
         uint256 value = 0;
-        bytes memory data =
-            abi.encodeWithSelector(SolverRegistry.setAuthorizedCaller.selector, caller, true);
+        bytes memory data = abi.encodeWithSelector(SolverRegistry.setAuthorizedCaller.selector, caller, true);
         bytes32 predecessor = bytes32(0);
         bytes32 salt = bytes32(0);
 
@@ -96,8 +92,7 @@ contract TimelockIntegrationTest is Test {
         // Prepare operation
         address target = address(hub);
         uint256 value = 0;
-        bytes memory data =
-            abi.encodeWithSelector(IntentReceiptHub.setChallengeWindow.selector, newChallengeWindow);
+        bytes memory data = abi.encodeWithSelector(IntentReceiptHub.setChallengeWindow.selector, newChallengeWindow);
         bytes32 predecessor = bytes32(0);
         bytes32 salt = bytes32(0);
 

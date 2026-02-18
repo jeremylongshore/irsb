@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.25;
 
-import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import { ReentrancyGuard } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 /// @title SecureVault — Fixed Version with IRSB Production Patterns
 /// @notice Mirrors VulnerableVault's API but applies all 4 fixes:
@@ -75,11 +75,7 @@ contract SecureVault is ReentrancyGuard {
         require(msg.value > 0, "Zero deposit");
         require(!escrows[id].active, "Already active");
 
-        escrows[id] = Escrow({
-            depositor: msg.sender,
-            amount: msg.value,
-            active: true
-        });
+        escrows[id] = Escrow({ depositor: msg.sender, amount: msg.value, active: true });
 
         emit Deposited(id, msg.sender, msg.value);
     }
@@ -100,7 +96,7 @@ contract SecureVault is ReentrancyGuard {
         escrow.amount = 0;
 
         // INTERACTION: Transfer after state update
-        (bool sent,) = msg.sender.call{value: amount}("");
+        (bool sent,) = msg.sender.call{ value: amount }("");
         require(sent, "Transfer failed");
 
         emit Withdrawn(id, msg.sender, amount);
@@ -134,7 +130,7 @@ contract SecureVault is ReentrancyGuard {
         rewardPool -= reward;
         rewardsClaimed[msg.sender] += reward;
 
-        (bool sent,) = msg.sender.call{value: reward}("");
+        (bool sent,) = msg.sender.call{ value: reward }("");
         require(sent, "Transfer failed");
 
         emit RewardClaimed(msg.sender, reward);
@@ -159,7 +155,7 @@ contract SecureVault is ReentrancyGuard {
 
         forfeitedBonds = 0;
 
-        (bool sent,) = treasury.call{value: amount}("");
+        (bool sent,) = treasury.call{ value: amount }("");
         require(sent, "Transfer failed");
 
         emit BondsSwept(amount);
@@ -175,5 +171,5 @@ contract SecureVault is ReentrancyGuard {
         forfeitedBonds += msg.value;
     }
 
-    receive() external payable {}
+    receive() external payable { }
 }

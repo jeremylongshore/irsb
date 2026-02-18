@@ -21,7 +21,7 @@ contract DisputeModuleInvariants is Test {
     function setUp() public {
         registry = new SolverRegistry();
         hub = new IntentReceiptHub(address(registry));
-        disputeModule = new DisputeModule(address(registry), address(hub), arbitrator);
+        disputeModule = new DisputeModule(address(hub), address(registry), arbitrator);
 
         // Authorize contracts
         registry.setAuthorizedCaller(address(hub), true);
@@ -33,19 +33,20 @@ contract DisputeModuleInvariants is Test {
     }
 
     /// @notice DM-4: Resolution Finality
-    /// @dev Once resolved, disputes cannot transition to any other status
+    /// @dev Once a receipt reaches a terminal state, it must stay there
     function invariant_DM4_resolutionFinality() public view {
-        bytes32[] memory receiptIds = handler.getDisputeIds();
+        bytes32[] memory disputeReceiptIds = handler.getDisputeIds();
 
-        for (uint256 i = 0; i < receiptIds.length; i++) {
-            (, Types.ReceiptStatus status) = hub.getReceipt(receiptIds[i]);
+        for (uint256 i = 0; i < disputeReceiptIds.length; i++) {
+            (, Types.ReceiptStatus currentStatus) = hub.getReceipt(disputeReceiptIds[i]);
+            uint256 previousMax = handler.highWaterMark(disputeReceiptIds[i]);
 
-            // If slashed or finalized, it cannot change back
-            if (status == Types.ReceiptStatus.Slashed || status == Types.ReceiptStatus.Finalized) {
-                assertTrue(
-                    status == Types.ReceiptStatus.Slashed || status == Types.ReceiptStatus.Finalized,
-                    "DM-4: Terminal status changed"
-                );
+            // Status must never regress
+            assertGe(uint256(currentStatus), previousMax, "DM-4: Status regressed");
+
+            // If we ever saw a terminal state, it must remain terminal
+            if (previousMax >= uint256(Types.ReceiptStatus.Finalized)) {
+                assertGe(uint256(currentStatus), uint256(Types.ReceiptStatus.Finalized), "DM-4: Left terminal state");
             }
         }
     }
@@ -82,6 +83,9 @@ contract DisputeHandler is Test {
 
     bytes32[] public receiptIds;
     bytes32[] public disputeIds;
+
+    /// @notice Tracks the highest status ever seen for each receipt
+    mapping(bytes32 => uint256) public highWaterMark;
 
     uint256 internal nonce;
 
@@ -139,10 +143,12 @@ contract DisputeHandler is Test {
             solverSig: ""
         });
 
+        uint256 currentNonce = hub.solverNonces(solverId);
         bytes32 messageHash = keccak256(
             abi.encode(
                 block.chainid,
                 address(hub),
+                currentNonce,
                 receipt.intentHash,
                 receipt.constraintsHash,
                 receipt.routeHash,
@@ -162,6 +168,7 @@ contract DisputeHandler is Test {
 
         bytes32 receiptId = Types.computeReceiptId(receipt);
         receiptIds.push(receiptId);
+        _updateHighWaterMark(receiptId);
     }
 
     /// @notice Open a dispute on a receipt
@@ -178,9 +185,19 @@ contract DisputeHandler is Test {
         vm.deal(challenger, 1 ether);
 
         vm.prank(challenger);
-        hub.openDispute{ value: 0.01 ether }(receiptId, Types.DisputeReason.Timeout, keccak256("evidence"));
+        try hub.openDispute{ value: 0.01 ether }(receiptId, Types.DisputeReason.Timeout, keccak256("evidence")) {
+            disputeIds.push(receiptId);
+            _updateHighWaterMark(receiptId);
+        } catch { }
+    }
 
-        disputeIds.push(receiptId);
+    /// @notice Track highest status ever seen for each receipt
+    function _updateHighWaterMark(bytes32 receiptId) internal {
+        (, Types.ReceiptStatus status) = hub.getReceipt(receiptId);
+        uint256 current = uint256(status);
+        if (current > highWaterMark[receiptId]) {
+            highWaterMark[receiptId] = current;
+        }
     }
 
     /// @notice Get all dispute IDs

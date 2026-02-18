@@ -123,14 +123,12 @@ contract RequireAuditTest is Test {
     function _postReceipt(bytes32 intentHash, uint64 expiry) internal returns (bytes32 receiptId) {
         Types.IntentReceipt memory receipt = _createSignedReceipt(intentHash, expiry);
         vm.prank(operator);
-        receiptId = hub.postReceipt(receipt);
+        receiptId = hub.postReceipt(receipt, 0);
     }
 
     function _openDispute(bytes32 receiptId) internal {
         vm.prank(challenger);
-        hub.openDispute{ value: hub.challengerBondMin() }(
-            receiptId, Types.DisputeReason.Timeout, keccak256("evidence")
-        );
+        hub.openDispute{ value: hub.challengerBondMin() }(receiptId, Types.DisputeReason.Timeout, keccak256("evidence"));
     }
 
     // ================================================================
@@ -267,7 +265,8 @@ contract RequireAuditTest is Test {
 
         vm.prank(operator);
         vm.expectRevert("Empty batch");
-        hub.batchPostReceipts(empty);
+        uint256[] memory emptyVolumes = new uint256[](0);
+        hub.batchPostReceipts(empty, emptyVolumes);
     }
 
     /// @notice batchPostReceipts reverts when array exceeds MAX_BATCH_SIZE (51)
@@ -276,7 +275,8 @@ contract RequireAuditTest is Test {
 
         vm.prank(operator);
         vm.expectRevert("Batch too large");
-        hub.batchPostReceipts(big);
+        uint256[] memory bigVolumes = new uint256[](51);
+        hub.batchPostReceipts(big, bigVolumes);
     }
 
     /// @notice openDispute reverts on non-existent receipt ID
@@ -286,9 +286,7 @@ contract RequireAuditTest is Test {
 
         vm.prank(challenger);
         vm.expectRevert(abi.encodeWithSignature("ReceiptNotFound()"));
-        hub.openDispute{ value: bondMin }(
-            fakeReceiptId, Types.DisputeReason.Timeout, keccak256("evidence")
-        );
+        hub.openDispute{ value: bondMin }(fakeReceiptId, Types.DisputeReason.Timeout, keccak256("evidence"));
     }
 
     /// @notice resolveEscalatedDispute reverts for non-dispute-module caller
@@ -492,9 +490,7 @@ contract RequireAuditTest is Test {
     function test_requireFail_EscrowVault_createEscrow_invalidDeadline() public {
         vm.warp(1000);
         vm.expectRevert(abi.encodeWithSignature("InvalidDeadline()"));
-        vault.createEscrow{ value: 1 ether }(
-            keccak256("e"), keccak256("r"), address(this), uint64(block.timestamp)
-        );
+        vault.createEscrow{ value: 1 ether }(keccak256("e"), keccak256("r"), address(this), uint64(block.timestamp));
     }
 
     /// @notice Unauthorized caller cannot release escrow
@@ -537,8 +533,7 @@ contract RequireAuditTest is Test {
         delegation.salt = 1;
 
         bytes32 structHash = TypesDelegation.hashDelegation(delegation);
-        bytes32 digest =
-            keccak256(abi.encodePacked("\x19\x01", walletDelegate.DOMAIN_SEPARATOR(), structHash));
+        bytes32 digest = keccak256(abi.encodePacked("\x19\x01", walletDelegate.DOMAIN_SEPARATOR(), structHash));
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(delegatorKey_, digest);
         delegation.signature = abi.encodePacked(r, s, v);
 
@@ -586,8 +581,7 @@ contract RequireAuditTest is Test {
         delegation.salt = 100;
 
         bytes32 structHash = TypesDelegation.hashDelegation(delegation);
-        bytes32 digest =
-            keccak256(abi.encodePacked("\x19\x01", walletDelegate.DOMAIN_SEPARATOR(), structHash));
+        bytes32 digest = keccak256(abi.encodePacked("\x19\x01", walletDelegate.DOMAIN_SEPARATOR(), structHash));
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(delegatorKey_, digest);
         delegation.signature = abi.encodePacked(r, s, v);
 
@@ -616,8 +610,7 @@ contract RequireAuditTest is Test {
         delegation.salt = 200;
 
         bytes32 structHash = TypesDelegation.hashDelegation(delegation);
-        bytes32 digest =
-            keccak256(abi.encodePacked("\x19\x01", walletDelegate.DOMAIN_SEPARATOR(), structHash));
+        bytes32 digest = keccak256(abi.encodePacked("\x19\x01", walletDelegate.DOMAIN_SEPARATOR(), structHash));
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(delegatorKey_, digest);
         delegation.signature = abi.encodePacked(r, s, v);
 

@@ -56,11 +56,7 @@ contract VulnerableVault {
         require(msg.value > 0, "Zero deposit");
         require(!escrows[id].active, "Already active");
 
-        escrows[id] = Escrow({
-            depositor: msg.sender,
-            amount: msg.value,
-            active: true
-        });
+        escrows[id] = Escrow({ depositor: msg.sender, amount: msg.value, active: true });
 
         emit Deposited(id, msg.sender, msg.value);
     }
@@ -83,7 +79,7 @@ contract VulnerableVault {
         // The external call happens while `escrow.active` is still true and
         // `escrow.amount` still holds the full value. A re-entrant call to
         // withdraw() will pass all checks again.
-        (bool sent,) = msg.sender.call{value: amount}("");
+        (bool sent,) = msg.sender.call{ value: amount }("");
         require(sent, "Transfer failed");
 
         // State update happens AFTER the external call — too late.
@@ -136,7 +132,7 @@ contract VulnerableVault {
         rewardPool -= reward;
         rewardsClaimed[msg.sender] += reward;
 
-        (bool sent,) = msg.sender.call{value: reward}("");
+        (bool sent,) = msg.sender.call{ value: reward }("");
         require(sent, "Transfer failed");
 
         emit RewardClaimed(msg.sender, reward);
@@ -170,7 +166,7 @@ contract VulnerableVault {
 
         forfeitedBonds = 0;
 
-        (bool sent,) = treasury.call{value: amount}("");
+        (bool sent,) = treasury.call{ value: amount }("");
         require(sent, "Transfer failed");
 
         emit BondsSwept(amount);
@@ -189,5 +185,5 @@ contract VulnerableVault {
     }
 
     /// @notice Accept ETH transfers (needed for flash loan repayments, etc.).
-    receive() external payable {}
+    receive() external payable { }
 }

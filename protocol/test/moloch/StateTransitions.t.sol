@@ -133,9 +133,7 @@ contract StateTransitionsTest is VerificationHelpers {
         vm.prank(operator);
         registry.depositBond{ value: 1 }(solverId);
 
-        verifyPostDeposit(
-            registry, solverId, MINIMUM_BOND, Types.SolverStatus.Active, totalBondedBefore + MINIMUM_BOND
-        );
+        verifyPostDeposit(registry, solverId, MINIMUM_BOND, Types.SolverStatus.Active, totalBondedBefore + MINIMUM_BOND);
     }
 
     /// @notice Verify ALL fields after slash from locked balance
@@ -200,7 +198,7 @@ contract StateTransitionsTest is VerificationHelpers {
         Types.IntentReceipt memory receipt = _createSignedReceipt(solverId, intentHash, expiry);
 
         vm.prank(operator);
-        bytes32 receiptId = hub.postReceipt(receipt);
+        bytes32 receiptId = hub.postReceipt(receipt, 0);
 
         // Verify Pending state
         (, Types.ReceiptStatus status) = hub.getReceipt(receiptId);
@@ -229,7 +227,7 @@ contract StateTransitionsTest is VerificationHelpers {
         Types.IntentReceipt memory receipt = _createSignedReceipt(solverId, intentHash, expiry);
 
         vm.prank(operator);
-        bytes32 receiptId = hub.postReceipt(receipt);
+        bytes32 receiptId = hub.postReceipt(receipt, 0);
 
         // Open dispute
         uint256 challengerBond = hub.challengerBondMin();

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.25;
 
-import {VulnerableVault} from "./VulnerableVault.sol";
-import {SecureVault} from "./SecureVault.sol";
+import { VulnerableVault } from "./VulnerableVault.sol";
+import { SecureVault } from "./SecureVault.sol";
 
 /// @title ReentrancyAttacker — Exploits the withdraw() reentrancy bug
 /// @notice Re-enters withdraw() during the ETH callback to drain the vault.
@@ -23,7 +23,7 @@ contract ReentrancyAttacker {
         attackCount = 0;
 
         // Step 1: Make a legitimate deposit
-        vault.deposit{value: msg.value}(id);
+        vault.deposit{ value: msg.value }(id);
 
         // Step 2: Trigger withdraw — the vault sends ETH, which triggers receive()
         vault.withdraw(id);
@@ -65,7 +65,7 @@ contract ReentrancyAttackerSecure {
         attackCount = 0;
         reentryAttempted = false;
 
-        vault.deposit{value: msg.value}(id);
+        vault.deposit{ value: msg.value }(id);
         vault.withdraw(id);
     }
 
@@ -93,7 +93,7 @@ contract MockLendingPool {
         uint256 balanceBefore = address(this).balance;
 
         // Send ETH to borrower
-        (bool sent,) = borrower.call{value: amount}("");
+        (bool sent,) = borrower.call{ value: amount }("");
         require(sent, "Loan transfer failed");
 
         // Borrower does whatever they want... then we check repayment
@@ -103,7 +103,7 @@ contract MockLendingPool {
         require(address(this).balance >= balanceBefore, "Flash loan not repaid");
     }
 
-    receive() external payable {}
+    receive() external payable { }
 }
 
 interface IFlashLoanReceiver {
@@ -137,9 +137,9 @@ contract FlashLoanAttacker is IFlashLoanReceiver {
         vault.registerSolver(solverId);
 
         // Repay the flash loan
-        (bool sent,) = address(pool).call{value: amount}("");
+        (bool sent,) = address(pool).call{ value: amount }("");
         require(sent, "Repayment failed");
     }
 
-    receive() external payable {}
+    receive() external payable { }
 }
