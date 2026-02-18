@@ -14,6 +14,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `services/solver/` | TypeScript, Express | Execute intents, produce evidence, submit receipts | v0.3.0 |
 | `services/watchtower/` | TypeScript, Fastify (pnpm monorepo) | Monitor receipts, detect violations, file disputes | v0.5.0 |
 | `services/agents/` | Python 3.11+, FastAPI, LangChain, ChromaDB | AI agents (builder + money) with RAG + Z3 verification | v0.2.0 |
+| `services/indexer/` | TypeScript, Envio HyperIndex | Index all 8 contracts / 41 events (GraphQL API) | v0.1.0 |
 | `services/gateway/` | TypeScript (planned) | Intentions Gateway — Web2/Web3 policy enforcement | Phase 1 |
 | `packages/kms-signer/` | TypeScript | Shared GCP Cloud KMS signing | v0.1.0 |
 | `packages/types/` | TypeScript | Shared types, contract addresses, constants | v0.1.0 |
@@ -96,6 +97,19 @@ pnpm canonical:refresh
 - **Apps**: `api` (Fastify), `worker` (scanner), `cli` (health/config/simulate)
 - Internal deps use `workspace:*` protocol
 - Tests per package in `test/` directories, discovered via `vitest.workspace.ts`
+
+### Indexer (Envio HyperIndex)
+
+```bash
+cd services/indexer/
+pnpm install
+pnpm codegen             # Generate types from schema (needs ENVIO_API_TOKEN or local Docker)
+pnpm test               # vitest run (requires codegen first)
+pnpm dev                # Start local indexer + GraphQL playground at localhost:8080 (needs Docker)
+pnpm start              # Start production indexer
+```
+
+Indexes all 8 IRSB contracts on Sepolia (41 events): SolverRegistry, IntentReceiptHub, DisputeModule, WalletDelegate, X402Facilitator, SpendLimitEnforcer, NonceEnforcer, IdentityRegistry. Built by [Jonjon Clark](mailto:jonjon@envio.dev) (Envio co-founder).
 
 ### Agent Passkey (DEPRECATED — archive only)
 

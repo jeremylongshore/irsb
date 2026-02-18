@@ -1,0 +1,28 @@
+{
+  "name": "@irsb/indexer",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Envio HyperIndex indexer for all IRSB Protocol contracts (8 contracts, 41 events)",
+  "author": "Jonjon Clark <jonjon@envio.dev>",
+  "license": "MIT",
+  "scripts": {
+    "codegen": "envio codegen",
+    "dev": "envio dev",
+    "start": "envio start",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "typescript": "5.9.3",
+    "vitest": "4.0.16"
+  },
+  "dependencies": {
+    "envio": "3.0.0-alpha.13"
+  },
+  "optionalDependencies": {
+    "generated": "./generated"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

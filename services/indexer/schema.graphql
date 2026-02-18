@@ -1,0 +1,350 @@
+# ============================================
+# SolverRegistry Events
+# ============================================
+
+type SolverRegistry_BondDeposited {
+  id: ID!
+  solverId: String!
+  amount: BigInt!
+  newBalance: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+type SolverRegistry_BondWithdrawn {
+  id: ID!
+  solverId: String!
+  amount: BigInt!
+  newBalance: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+type SolverRegistry_OperatorKeyRotated {
+  id: ID!
+  solverId: String!
+  oldOperator: String!
+  newOperator: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+type SolverRegistry_OwnershipTransferred {
+  id: ID!
+  previousOwner: String!
+  newOwner: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+type SolverRegistry_Paused {
+  id: ID!
+  account: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+type SolverRegistry_SolverRegistered {
+  id: ID!
+  solverId: String!
+  operator: String!
+  metadataURI: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+type SolverRegistry_SolverSlashed {
+  id: ID!
+  solverId: String!
+  amount: BigInt!
+  receiptId: String!
+  reason: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+type SolverRegistry_SolverStatusChanged {
+  id: ID!
+  solverId: String!
+  oldStatus: BigInt!
+  newStatus: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+type SolverRegistry_Unpaused {
+  id: ID!
+  account: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+# ============================================
+# IntentReceiptHub Events
+# ============================================
+
+type IntentReceiptHub_ReceiptPosted {
+  id: ID!
+  receiptId: String!
+  intentHash: String!
+  solverId: String!
+  expiry: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+type IntentReceiptHub_DisputeOpened {
+  id: ID!
+  receiptId: String!
+  solverId: String!
+  challenger: String!
+  reason: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+type IntentReceiptHub_DisputeResolved {
+  id: ID!
+  receiptId: String!
+  solverId: String!
+  slashed: Boolean!
+  slashAmount: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+type IntentReceiptHub_ReceiptFinalized {
+  id: ID!
+  receiptId: String!
+  solverId: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+type IntentReceiptHub_SettlementProofSubmitted {
+  id: ID!
+  receiptId: String!
+  proofHash: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+# ============================================
+# DisputeModule Events
+# ============================================
+
+type DisputeModule_EvidenceSubmitted {
+  id: ID!
+  disputeId: String!
+  submitter: String!
+  evidenceHash: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+type DisputeModule_DisputeEscalated {
+  id: ID!
+  disputeId: String!
+  arbitrator: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+type DisputeModule_ArbitrationResolved {
+  id: ID!
+  disputeId: String!
+  solverFault: Boolean!
+  slashAmount: BigInt!
+  reason: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+type DisputeModule_OwnershipTransferred {
+  id: ID!
+  previousOwner: String!
+  newOwner: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+# ============================================
+# WalletDelegate Events
+# ============================================
+
+type WalletDelegate_DelegationSetup {
+  id: ID!
+  delegationHash: String!
+  delegator: String!
+  caveatCount: BigInt!
+  salt: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+type WalletDelegate_DelegationRevoked {
+  id: ID!
+  delegationHash: String!
+  delegator: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+type WalletDelegate_DelegatedExecution {
+  id: ID!
+  delegationHash: String!
+  delegator: String!
+  target: String!
+  value: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+# ============================================
+# X402Facilitator Events
+# ============================================
+
+type X402Facilitator_BatchSettled {
+  id: ID!
+  count: BigInt!
+  totalAmount: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+type X402Facilitator_DelegatedPaymentSettled {
+  id: ID!
+  paymentHash: String!
+  delegationHash: String!
+  buyer: String!
+  seller: String!
+  token: String!
+  amount: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+type X402Facilitator_OwnershipTransferred {
+  id: ID!
+  previousOwner: String!
+  newOwner: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+type X402Facilitator_Paused {
+  id: ID!
+  account: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+type X402Facilitator_PaymentSettled {
+  id: ID!
+  paymentHash: String!
+  buyer: String!
+  seller: String!
+  token: String!
+  amount: BigInt!
+  receiptId: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+type X402Facilitator_Unpaused {
+  id: ID!
+  account: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+# ============================================
+# SpendLimitEnforcer Events
+# ============================================
+
+type SpendLimitEnforcer_SpendRecorded {
+  id: ID!
+  delegationHash: String!
+  token: String!
+  amount: BigInt!
+  epochTotal: BigInt!
+  epoch: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+# ============================================
+# NonceEnforcer Events
+# ============================================
+
+type NonceEnforcer_NonceUsed {
+  id: ID!
+  delegationHash: String!
+  nonce: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+# ============================================
+# IdentityRegistry Events
+# ============================================
+
+type IdentityRegistry_Registered {
+  id: ID!
+  agentId: BigInt!
+  agentURI: String!
+  owner: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+type IdentityRegistry_MetadataSet {
+  id: ID!
+  agentId: BigInt!
+  indexedMetadataKey: String!
+  metadataKey: String!
+  metadataValue: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}
+
+type IdentityRegistry_URIUpdated {
+  id: ID!
+  agentId: BigInt!
+  newURI: String!
+  updatedBy: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+}

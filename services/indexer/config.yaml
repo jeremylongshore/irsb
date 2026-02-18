@@ -1,0 +1,87 @@
+# yaml-language-server: $schema=./node_modules/envio/evm.schema.json
+name: irsb-indexer
+description: IRSB Protocol Indexer
+
+contracts:
+  - name: SolverRegistry
+    events:
+      - event: "BondDeposited(bytes32 indexed solverId, uint256 amount, uint256 newBalance)"
+      - event: "BondWithdrawn(bytes32 indexed solverId, uint256 amount, uint256 newBalance)"
+      - event: "OperatorKeyRotated(bytes32 indexed solverId, address indexed oldOperator, address indexed newOperator)"
+      - event: "OwnershipTransferred(address indexed previousOwner, address indexed newOwner)"
+      - event: "Paused(address account)"
+      - event: "SolverRegistered(bytes32 indexed solverId, address indexed operator, string metadataURI)"
+      - event: "SolverSlashed(bytes32 indexed solverId, uint256 amount, bytes32 indexed receiptId, uint8 reason)"
+      - event: "SolverStatusChanged(bytes32 indexed solverId, uint8 oldStatus, uint8 newStatus)"
+      - event: "Unpaused(address account)"
+
+  - name: IntentReceiptHub
+    events:
+      - event: "ReceiptPosted(bytes32 indexed receiptId, bytes32 indexed intentHash, bytes32 indexed solverId, uint64 expiry)"
+      - event: "DisputeOpened(bytes32 indexed receiptId, bytes32 indexed solverId, address indexed challenger, uint8 reason)"
+      - event: "DisputeResolved(bytes32 indexed receiptId, bytes32 indexed solverId, bool slashed, uint256 slashAmount)"
+      - event: "ReceiptFinalized(bytes32 indexed receiptId, bytes32 indexed solverId)"
+      - event: "SettlementProofSubmitted(bytes32 indexed receiptId, bytes32 proofHash)"
+
+  - name: DisputeModule
+    events:
+      - event: "EvidenceSubmitted(bytes32 indexed disputeId, address indexed submitter, bytes32 evidenceHash)"
+      - event: "DisputeEscalated(bytes32 indexed disputeId, address indexed arbitrator)"
+      - event: "ArbitrationResolved(bytes32 indexed disputeId, bool solverFault, uint256 slashAmount, string reason)"
+      - event: "OwnershipTransferred(address indexed previousOwner, address indexed newOwner)"
+
+  - name: WalletDelegate
+    events:
+      - event: "DelegationSetup(bytes32 indexed delegationHash, address indexed delegator, uint256 caveatCount, uint256 salt)"
+      - event: "DelegationRevoked(bytes32 indexed delegationHash, address indexed delegator)"
+      - event: "DelegatedExecution(bytes32 indexed delegationHash, address indexed delegator, address indexed target, uint256 value)"
+
+  - name: X402Facilitator
+    events:
+      - event: "BatchSettled(uint256 count, uint256 totalAmount)"
+      - event: "DelegatedPaymentSettled(bytes32 indexed paymentHash, bytes32 indexed delegationHash, address indexed buyer, address seller, address token, uint256 amount)"
+      - event: "OwnershipTransferred(address indexed previousOwner, address indexed newOwner)"
+      - event: "Paused(address account)"
+      - event: "PaymentSettled(bytes32 indexed paymentHash, address indexed buyer, address indexed seller, address token, uint256 amount, bytes32 receiptId)"
+      - event: "Unpaused(address account)"
+
+  - name: SpendLimitEnforcer
+    events:
+      - event: "SpendRecorded(bytes32 indexed delegationHash, address indexed token, uint256 amount, uint256 epochTotal, uint256 epoch)"
+
+  - name: NonceEnforcer
+    events:
+      - event: "NonceUsed(bytes32 indexed delegationHash, uint256 nonce)"
+
+  - name: IdentityRegistry
+    events:
+      - event: "Registered(uint256 indexed agentId, string agentURI, address indexed owner)"
+      - event: "MetadataSet(uint256 indexed agentId, string indexed indexedMetadataKey, string metadataKey, bytes metadataValue)"
+      - event: "URIUpdated(uint256 indexed agentId, string newURI, address indexed updatedBy)"
+
+chains:
+  - id: 11155111 # Sepolia
+    start_block: 0
+    contracts:
+      - name: SolverRegistry
+        address: 0xB6ab964832808E49635fF82D1996D6a888ecB745
+      - name: IntentReceiptHub
+        address: 0xD66A1e880AA3939CA066a9EA1dD37ad3d01D977c
+      - name: DisputeModule
+        address: 0x144DfEcB57B08471e2A75E78fc0d2A74A89DB79D
+      - name: WalletDelegate
+        address: 0x6e7262bA8eE3e722aD5f83Ad793f3c071A3769cB
+      - name: X402Facilitator
+        address: 0x0CDf48B293cdee132918cFb3a976aA6da59f4E6F
+      - name: SpendLimitEnforcer
+        address: 0x8eBAF3db4785C3E8DFABa1A77Ee6373eD5D38F8D
+      - name: NonceEnforcer
+        address: 0x02962c406A7a29adF26F40657b111B90c236DbF1
+      - name: IdentityRegistry
+        address: 0x8004A818BFB912233c491871b3d84c89A494BD9e
+
+field_selection:
+  transaction_fields:
+    - hash
+
+address_format: lowercase

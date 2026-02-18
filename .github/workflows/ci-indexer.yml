@@ -1,0 +1,41 @@
+name: CI — Indexer
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'services/indexer/**'
+      - '.github/workflows/ci-indexer.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'services/indexer/**'
+      - '.github/workflows/ci-indexer.yml'
+
+jobs:
+  build-and-test:
+    name: Codegen & Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/indexer
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: .
+
+      - name: Generate types
+        run: pnpm codegen
+        env:
+          ENVIO_API_TOKEN: ${{ secrets.ENVIO_API_TOKEN }}
+
+      - name: Run tests
+        run: pnpm test

@@ -4,5 +4,6 @@ packages:
   - "services/watchtower"
   - "services/watchtower/packages/*"
   - "services/watchtower/apps/*"
+  - "services/indexer"
   - "protocol/sdk"
   - "protocol/packages/*"
