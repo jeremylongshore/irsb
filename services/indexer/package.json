@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "codegen": "envio codegen && ln -sf ../.env generated/.env",
-    "dev": "envio dev",
+    "dev": "bash dev.sh",
     "start": "envio start",
     "docker:up": "docker compose -f generated/docker-compose.yaml up -d",
     "docker:down": "docker compose -f generated/docker-compose.yaml down -v",

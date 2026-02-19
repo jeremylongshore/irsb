@@ -122,21 +122,22 @@ cd services/indexer/
 # Tests (vitest + Envio MockDb — no Docker needed)
 pnpm test               # vitest run (requires codegen + ENVIO_API_TOKEN)
 
-# Local dev (Docker required)
-pnpm docker:up          # Start PostgreSQL + Hasura (reads ports from .env)
-TUI_OFF=true pnpm start # Start indexer (source .env first: set -a; source .env; set +a)
-# GraphQL playground at http://localhost:${HASURA_EXTERNAL_PORT}/console
-# Query endpoint: http://localhost:${HASURA_EXTERNAL_PORT}/v1/graphql
-#   Header: x-hasura-admin-secret: testing
+# Local dev (Docker required — starts containers, indexer, cleans up on Ctrl+C)
+pnpm dev                # PostgreSQL + Hasura + indexer, Ctrl+C tears everything down
+                        # GraphQL: http://localhost:8082/v1/graphql (secret: testing)
+                        # Console: http://localhost:8082/console
+
+# Manual container control (if needed)
+pnpm docker:up          # Start containers only
 pnpm docker:down        # Tear down containers + volumes
 
 # Re-run codegen after config.yaml or schema.graphql changes
 pnpm codegen            # Also re-symlinks .env → generated/.env
 ```
 
-**Port config:** System PostgreSQL runs on 5433, Caddy on 8080. The `.env` overrides
-`ENVIO_PG_PORT` (default 5434) and `HASURA_EXTERNAL_PORT` (default 8082) to avoid conflicts.
-The `codegen` script symlinks `.env` into `generated/` so docker-compose picks up the ports.
+**Port config:** System PostgreSQL runs on 5433, Caddy on 8080. The `.env` sets
+`ENVIO_PG_PORT=5434` and `HASURA_EXTERNAL_PORT=8082` to avoid conflicts.
+The `codegen` script symlinks `.env` into `generated/` so docker-compose reads them.
 
 **What it indexes:** All 8 IRSB contracts on Sepolia (41 events): SolverRegistry, IntentReceiptHub, DisputeModule, WalletDelegate, X402Facilitator, SpendLimitEnforcer, NonceEnforcer, IdentityRegistry.
 
