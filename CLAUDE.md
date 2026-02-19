@@ -100,16 +100,45 @@ pnpm canonical:refresh
 
 ### Indexer (Envio HyperIndex)
 
+**One-time setup:**
+
 ```bash
-cd services/indexer/
+# 1. Install dependencies (from monorepo root — resolves all workspace packages)
 pnpm install
-pnpm codegen             # Generate types from schema (needs ENVIO_API_TOKEN or local Docker)
-pnpm test               # vitest run (requires codegen first)
-pnpm dev                # Start local indexer + GraphQL playground at localhost:8080 (needs Docker)
-pnpm start              # Start production indexer
+
+# 2. Generate types (MUST run before tests or dev — creates services/indexer/generated/)
+pnpm --dir services/indexer codegen
+
+# 3. Create .env from example (get free token at https://envio.dev/app/api-tokens)
+cp services/indexer/.env.example services/indexer/.env
+# Edit .env and set ENVIO_API_TOKEN="your-token-here"
 ```
 
-Indexes all 8 IRSB contracts on Sepolia (41 events): SolverRegistry, IntentReceiptHub, DisputeModule, WalletDelegate, X402Facilitator, SpendLimitEnforcer, NonceEnforcer, IdentityRegistry. Built by [Jonjon Clark](mailto:jonjon@envio.dev) (Envio co-founder).
+**Daily commands:**
+
+```bash
+cd services/indexer/
+
+# Tests (vitest + Envio MockDb — no Docker needed, but ENVIO_API_TOKEN required)
+pnpm test               # vitest run (1 test: SolverRegistry BondDeposited)
+
+# Local dev (Docker required — starts PostgreSQL + indexer + GraphQL playground)
+pnpm dev                # GraphQL playground at http://localhost:8080
+
+# Production
+pnpm start              # Start production indexer
+
+# Re-run codegen after config.yaml or schema.graphql changes
+pnpm codegen
+```
+
+**Prerequisites:**
+- `ENVIO_API_TOKEN` in `.env` — required for both tests and dev (HyperSync data source)
+- Docker — required for `pnpm dev` only (PostgreSQL container)
+- `pnpm codegen` — must run after install and after any `config.yaml` or `schema.graphql` changes
+- `js-sdsl` — transitive Envio dependency, already in package.json
+
+**What it indexes:** All 8 IRSB contracts on Sepolia (41 events): SolverRegistry, IntentReceiptHub, DisputeModule, WalletDelegate, X402Facilitator, SpendLimitEnforcer, NonceEnforcer, IdentityRegistry.
 
 ### Agent Passkey (DEPRECATED — archive only)
 
