@@ -6,9 +6,11 @@
   "author": "Jonjon Clark <jonjon@envio.dev>",
   "license": "MIT",
   "scripts": {
-    "codegen": "envio codegen",
+    "codegen": "envio codegen && ln -sf ../.env generated/.env",
     "dev": "envio dev",
     "start": "envio start",
+    "docker:up": "docker compose -f generated/docker-compose.yaml up -d",
+    "docker:down": "docker compose -f generated/docker-compose.yaml down -v",
     "test": "vitest run"
   },
   "devDependencies": {

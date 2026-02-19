@@ -103,40 +103,40 @@ pnpm canonical:refresh
 **One-time setup:**
 
 ```bash
-# 1. Install dependencies (from monorepo root — resolves all workspace packages)
+# 1. Install dependencies (from monorepo root)
 pnpm install
 
-# 2. Generate types (MUST run before tests or dev — creates services/indexer/generated/)
-pnpm --dir services/indexer codegen
-
-# 3. Create .env from example (get free token at https://envio.dev/app/api-tokens)
+# 2. Create .env from example (get free token at https://envio.dev/app/api-tokens)
 cp services/indexer/.env.example services/indexer/.env
-# Edit .env and set ENVIO_API_TOKEN="your-token-here"
+# Edit .env: set ENVIO_API_TOKEN and uncomment port overrides if 5433/8080 are taken
+
+# 3. Generate types + symlink .env into generated/ (MUST run before tests)
+pnpm --dir services/indexer codegen
 ```
 
-**Daily commands:**
+**Commands:**
 
 ```bash
 cd services/indexer/
 
-# Tests (vitest + Envio MockDb — no Docker needed, but ENVIO_API_TOKEN required)
-pnpm test               # vitest run (1 test: SolverRegistry BondDeposited)
+# Tests (vitest + Envio MockDb — no Docker needed)
+pnpm test               # vitest run (requires codegen + ENVIO_API_TOKEN)
 
-# Local dev (Docker required — starts PostgreSQL + indexer + GraphQL playground)
-pnpm dev                # GraphQL playground at http://localhost:8080
-
-# Production
-pnpm start              # Start production indexer
+# Local dev (Docker required)
+pnpm docker:up          # Start PostgreSQL + Hasura (reads ports from .env)
+TUI_OFF=true pnpm start # Start indexer (source .env first: set -a; source .env; set +a)
+# GraphQL playground at http://localhost:${HASURA_EXTERNAL_PORT}/console
+# Query endpoint: http://localhost:${HASURA_EXTERNAL_PORT}/v1/graphql
+#   Header: x-hasura-admin-secret: testing
+pnpm docker:down        # Tear down containers + volumes
 
 # Re-run codegen after config.yaml or schema.graphql changes
-pnpm codegen
+pnpm codegen            # Also re-symlinks .env → generated/.env
 ```
 
-**Prerequisites:**
-- `ENVIO_API_TOKEN` in `.env` — required for both tests and dev (HyperSync data source)
-- Docker — required for `pnpm dev` only (PostgreSQL container)
-- `pnpm codegen` — must run after install and after any `config.yaml` or `schema.graphql` changes
-- `js-sdsl` — transitive Envio dependency, already in package.json
+**Port config:** System PostgreSQL runs on 5433, Caddy on 8080. The `.env` overrides
+`ENVIO_PG_PORT` (default 5434) and `HASURA_EXTERNAL_PORT` (default 8082) to avoid conflicts.
+The `codegen` script symlinks `.env` into `generated/` so docker-compose picks up the ports.
 
 **What it indexes:** All 8 IRSB contracts on Sepolia (41 events): SolverRegistry, IntentReceiptHub, DisputeModule, WalletDelegate, X402Facilitator, SpendLimitEnforcer, NonceEnforcer, IdentityRegistry.
 
