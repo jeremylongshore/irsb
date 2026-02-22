@@ -20,6 +20,47 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `packages/types/` | TypeScript | Shared types, contract addresses, constants | v0.1.0 |
 | `archive/agent-passkey/` | TypeScript, Fastify | Policy-gated signing via Lit Protocol PKP | Deprecated |
 
+## Monorepo Basics
+
+**Requirements:** Node 22+ (`.nvmrc`), pnpm 9+ (`packageManager: pnpm@9.15.0`). All TypeScript is ESM (`"type": "module"`).
+
+**Root-level commands** (run from repo root — delegates to all workspace members):
+
+```bash
+pnpm install              # Install all workspace dependencies
+pnpm build                # Build all TypeScript packages (pnpm -r build)
+pnpm test                 # Test all TypeScript packages (pnpm -r test)
+pnpm typecheck            # TypeScript check all packages
+pnpm lint                 # ESLint all packages
+pnpm format               # Prettier write all TS/JSON/MD files
+pnpm format:check         # Prettier check (CI)
+
+# Per-project shortcuts from root
+pnpm test:protocol        # cd protocol && forge test
+pnpm test:solver          # pnpm --filter @irsb/solver test
+pnpm test:watchtower      # pnpm --filter @irsb/watchtower... test
+pnpm test:agents          # cd services/agents && pytest
+pnpm test:indexer         # pnpm --filter @irsb/indexer test
+pnpm dev:indexer          # pnpm --filter @irsb/indexer dev
+```
+
+**pnpm workspace members** (`pnpm-workspace.yaml`):
+`packages/*`, `services/solver`, `services/watchtower`, `services/watchtower/packages/*`, `services/watchtower/apps/*`, `services/indexer`, `protocol/sdk`, `protocol/packages/*`
+
+## Code Style
+
+**TypeScript** — `tsconfig.base.json` is unusually strict. Watch for these:
+- `exactOptionalPropertyTypes: true` — `foo?: string` does NOT accept `undefined` as a value, only omission
+- `noUncheckedIndexedAccess: true` — `arr[0]` returns `T | undefined`, not `T`
+- `noUnusedLocals` + `noUnusedParameters` — prefix unused params with `_`
+
+**ESLint** — `eslint.config.js` uses `strictTypeChecked` + `stylisticTypeChecked`:
+- `consistent-type-imports: error` — use `import type { Foo }` for type-only imports
+- `consistent-type-exports: error` — use `export type { Foo }` for type-only exports
+- `no-console: warn` — only `console.warn` and `console.error` allowed (use pino for logging)
+
+**Prettier** — single quotes, semicolons, 100 char print width, es5 trailing commas, LF line endings.
+
 ## Build, Test, Lint Commands
 
 ### Protocol (Foundry/Solidity)
@@ -143,21 +184,7 @@ The `codegen` script symlinks `.env` into `generated/` so docker-compose reads t
 
 ### Agent Passkey (DEPRECATED — archive only)
 
-```bash
-cd archive/agent-passkey/
-pnpm install
-pnpm build              # tsc
-pnpm test               # vitest run
-pnpm test:watch
-pnpm test:coverage      # Coverage with thresholds (25% statements, 50% branches)
-pnpm lint               # eslint src
-pnpm lint:fix
-pnpm format             # prettier
-pnpm typecheck          # tsc --noEmit
-pnpm dev                # tsx watch src/server/gateway.ts
-```
-
-Tests in separate `test/` directory with subdirs: `unit/`, `integration/`, `security/`
+Located in `archive/agent-passkey/`. Standard pnpm commands (`build`, `test`, `lint`, `typecheck`). Tests in `test/{unit,integration,security}/`. **Do not invest time here** — replaced by Cloud KMS + EIP-7702 delegation.
 
 ### Agents (Python)
 
