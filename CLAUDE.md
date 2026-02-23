@@ -212,6 +212,20 @@ Tests in `tests/` directory. Uses pytest with asyncio_mode=auto.
 - **Source `.env`** with `source .env 2>/dev/null` or export vars explicitly.
 - **`forge script`** requires contract name: `forge script script/Foo.s.sol:ContractName`
 
+## Environment Setup
+
+Each service has a `.env.example` — copy to `.env` and fill in values:
+
+| Service | Key Requirements |
+|---------|-----------------|
+| `protocol/` | `SEPOLIA_RPC_URL`, deployer private key (for scripts only) |
+| `services/solver/` | `RPC_URL`, `PRIVATE_KEY`, contract addresses |
+| `services/watchtower/` | `RPC_URL`, `CHAIN_ID`, contract addresses. **Start with `DRY_RUN=true`** |
+| `services/agents/` | `OLLAMA_BASE_URL` (local dev), model config |
+| `services/indexer/` | **`ENVIO_API_TOKEN` required** (free at https://envio.dev/app/api-tokens) |
+
+See each project's `.env.example` for the full variable list.
+
 ## Architecture
 
 ```text
@@ -251,9 +265,9 @@ When contract interfaces change:
 
 ## Signing Architecture
 
-**Cloud KMS + EIP-7702 Delegation.** Solver and watchtower sign directly via Google Cloud KMS. On-chain policy enforcement uses EIP-7702 WalletDelegate with caveat enforcers (spend limits, time windows, allowed targets/methods, replay prevention). See `protocol/000-docs/030-DR-ARCH-eip7702-delegation-architecture.md` for the full ADR.
+**Cloud KMS + EIP-7702 Delegation.** Solver signs via `@irsb/kms-signer` (Google Cloud KMS). Watchtower's KMS signer is scaffolded in `packages/signers` but **integration is pending** — it currently uses `LocalPrivateKey` signer only. On-chain policy enforcement uses EIP-7702 WalletDelegate with caveat enforcers (spend limits, time windows, allowed targets/methods, replay prevention). See `protocol/000-docs/030-DR-ARCH-eip7702-delegation-architecture.md` for the full ADR.
 
-**Note:** The `agent-passkey/` service (Lit Protocol PKP) is still deployed on Cloud Run but fully deprecated. Both solver and watchtower have been migrated to Cloud KMS — no code references to agent-passkey remain in their signing paths.
+**Note:** The `agent-passkey/` service (Lit Protocol PKP) is still deployed on Cloud Run but fully deprecated. Solver has been migrated to Cloud KMS; watchtower KMS migration is in progress.
 
 ## Common Patterns Across TypeScript Projects
 
@@ -263,9 +277,23 @@ When contract interfaces change:
 | Logging | pino with structured JSON, correlation IDs (`intentId`, `runId`, `receiptId`) |
 | Testing | vitest for all TypeScript projects |
 | Determinism | Canonical JSON serialization for hashing (sorted keys, no whitespace) |
-| CI/CD | GitHub Actions + Workload Identity Federation (keyless GCP auth) |
+| CI/CD | GitHub Actions with path-filtered workflows (WIF planned, not yet configured) |
 | TypeScript | ES2022 target, strict mode, all strict flags enabled |
 | Commits | Conventional Commits (`feat:`, `fix:`, `docs:`, `test:`, `chore:`, `refactor:`, `perf:`) |
+
+## CI/CD Workflows
+
+All workflows run on push/PR to `main` with path filters (only trigger when relevant files change):
+
+| Workflow | File | Trigger Paths | What It Checks |
+|----------|------|---------------|----------------|
+| CI — Protocol | `ci-protocol.yml` | `protocol/**` | Foundry build + 552 tests + `forge fmt --check` |
+| CI — TypeScript | `ci-typescript.yml` | `services/solver/**`, `services/watchtower/**`, `packages/**`, `protocol/sdk/**` | pnpm build, vitest, typecheck, lint, format:check |
+| CI — Agents | `ci-agents.yml` | `services/agents/**` | Python 3.11 pytest + ruff |
+| CI — Indexer | `ci-indexer.yml` | `services/indexer/**` | Envio codegen + vitest (needs `ENVIO_API_TOKEN` secret) |
+| CodeQL | `codeql.yml` | All paths (+ weekly schedule) | Security scanning for JS/TS and Python |
+
+**Required secret:** `ENVIO_API_TOKEN` (for ci-indexer). No GCP secrets needed — no WIF configured yet.
 
 ## Live Deployments
 
@@ -291,6 +319,11 @@ Unifying Web2 MCP governance + Web3 on-chain enforcement. See `protocol/000-docs
 - **New services**: `services/gateway/`, `policy-admin/`, `audit-vault/` — all calling INTO existing IRSB contracts
 - **Data store**: Firestore (MVP), Spanner upgrade path at >50K/min
 - **Runtime**: Cloud Run everywhere
+
+## CHANGELOG & License
+
+- **CHANGELOG**: See `CHANGELOG.md` — tracks monorepo migration history and version releases.
+- **License**: BUSL-1.1 (Business Source License). Converts to MIT on 2029-02-17. See `LICENSE`.
 
 ## GitHub Repository
 
