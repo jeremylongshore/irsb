@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-> **AI Context**: For ecosystem-wide reference (contracts, deployments, concepts, glossary), see [AI-CONTEXT.md](./AI-CONTEXT.md). Each sub-project also has its own CLAUDE.md with project-specific rules.
+> Each sub-project also has its own CLAUDE.md with project-specific rules (`protocol/`, `services/solver/`, `services/watchtower/`, `services/agents/`).
 
 ## Workspace Overview
 
@@ -15,7 +15,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `services/watchtower/` | TypeScript, Fastify (pnpm monorepo) | Monitor receipts, detect violations, file disputes | v0.5.0 |
 | `services/agents/` | Python 3.11+, FastAPI, LangChain, ChromaDB | AI agents (builder + money) with RAG + Z3 verification | v0.2.0 |
 | `services/indexer/` | TypeScript, Envio HyperIndex | Index all 8 contracts / 41 events (GraphQL API) | v0.1.0 |
-| `services/gateway/` | TypeScript (planned) | Intentions Gateway — Web2/Web3 policy enforcement | Phase 1 |
+| `services/gateway/` | TypeScript (planned) | Intentions Gateway — Web2/Web3 policy enforcement | Phase 1 (not yet created) |
 | `packages/kms-signer/` | TypeScript | Shared GCP Cloud KMS signing | v0.1.0 |
 | `packages/types/` | TypeScript | Shared types, contract addresses, constants | v0.1.0 |
 | `archive/agent-passkey/` | TypeScript, Fastify | Policy-gated signing via Lit Protocol PKP | Deprecated |
@@ -34,6 +34,7 @@ pnpm typecheck            # TypeScript check all packages
 pnpm lint                 # ESLint all packages
 pnpm format               # Prettier write all TS/JSON/MD files
 pnpm format:check         # Prettier check (CI)
+pnpm clean                # Clean all dist/build artifacts (pnpm -r clean)
 
 # Per-project shortcuts from root
 pnpm test:protocol        # cd protocol && forge test
@@ -134,7 +135,7 @@ pnpm canonical:refresh
 ```
 
 **Workspace layout** (`pnpm-workspace.yaml` defines `packages/*` and `apps/*`):
-- **Packages**: `core`, `config`, `chain`, `irsb-adapter`, `signers`, `resilience`, `webhook`, `evidence-store`, `metrics`
+- **Packages**: `chain`, `config`, `core`, `evidence-store`, `irsb-adapter`, `metrics`, `resilience`, `signers`, `watchtower-api`, `watchtower-cli`, `watchtower-core`, `webhook`
 - **Apps**: `api` (Fastify), `worker` (scanner), `cli` (health/config/simulate)
 - Internal deps use `workspace:*` protocol
 - Tests per package in `test/` directories, discovered via `vitest.workspace.ts`
@@ -284,7 +285,7 @@ Each project has a flat `000-docs/` directory (no subdirectories). Files follow 
 
 ## Intentions Gateway (Planned)
 
-Unifying Web2 MCP governance + Web3 on-chain enforcement. See `000-docs/040-AT-ARCH-intentions-gateway-architecture.md` for the full architecture doc.
+Unifying Web2 MCP governance + Web3 on-chain enforcement. See `protocol/000-docs/040-AT-ARCH-intentions-gateway-architecture.md` for the full architecture doc.
 
 - **Policy engine**: Cedar (42-60x faster than OPA, sub-ms evaluation)
 - **New services**: `services/gateway/`, `policy-admin/`, `audit-vault/` — all calling INTO existing IRSB contracts
