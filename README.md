@@ -10,6 +10,7 @@
   <a href="https://github.com/jeremylongshore/irsb/actions/workflows/ci-typescript.yml"><img src="https://github.com/jeremylongshore/irsb/actions/workflows/ci-typescript.yml/badge.svg" alt="CI — TypeScript"></a>
   <a href="https://github.com/jeremylongshore/irsb/actions/workflows/ci-agents.yml"><img src="https://github.com/jeremylongshore/irsb/actions/workflows/ci-agents.yml/badge.svg" alt="CI — Agents"></a>
   <a href="https://github.com/jeremylongshore/irsb/actions/workflows/codeql.yml"><img src="https://github.com/jeremylongshore/irsb/actions/workflows/codeql.yml/badge.svg" alt="CodeQL"></a>
+<a href="https://ko-fi.com/U5S225PTME"><img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="ko-fi"></a>
 </p>
 
 <p align="center">
