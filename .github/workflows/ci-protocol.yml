@@ -33,7 +33,7 @@ jobs:
         run: forge build --sizes
 
       - name: Unit & integration tests
-        run: forge test --no-match-path "test/fuzz/*" --no-match-path "test/invariants/*"
+        run: forge test --no-match-path "test/{fuzz,invariants}/*"
 
       - name: Fuzz tests (CI profile — 10k runs)
         env:
