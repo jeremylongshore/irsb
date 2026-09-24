@@ -142,4 +142,18 @@ interface IIntentReceiptHub {
     /// @param receiptId Receipt under dispute
     /// @param solverFault Whether solver was at fault
     function resolveEscalatedDispute(bytes32 receiptId, bool solverFault) external;
+
+    /// @notice Post a receipt from a trusted hook (no solver signature required)
+    /// @param receipt The receipt to post
+    /// @param declaredVolume The declared transaction volume
+    /// @return receiptId Unique receipt identifier
+    function postReceiptFromHook(Types.IntentReceipt calldata receipt, uint256 declaredVolume)
+        external
+        returns (bytes32 receiptId);
+
+    /// @notice Open a dispute from a trusted hook (no challenger bond required)
+    /// @param receiptId Receipt to dispute
+    /// @param reason Dispute reason code
+    /// @param evidenceHash Evidence bundle hash
+    function openDisputeFromHook(bytes32 receiptId, Types.DisputeReason reason, bytes32 evidenceHash) external;
 }
