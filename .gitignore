@@ -41,3 +41,6 @@ protocol/out/
 coverage/
 .nyc_output/
 htmlcov/
+
+# Dolt database files (added by bd init)
+.dolt/
