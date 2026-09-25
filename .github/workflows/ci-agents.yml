@@ -35,5 +35,5 @@ jobs:
 
       - name: Lint
         run: |
-          pip install ruff
+          pip install 'ruff==0.16.8'
           ruff check .
