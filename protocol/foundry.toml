@@ -19,7 +19,10 @@ invariant = { runs = 256 }
 
 [profile.ci]
 fuzz = { runs = 10000 }
-invariant = { runs = 10000 }
+# Invariant campaigns stay at 256 runs (x default depth 500 = ~128k handler calls
+# per invariant). At 10k runs the suite took 4h+ on a GitHub runner
+# (BondAccounting alone 14,284s in run 36074953993) and never finished.
+invariant = { runs = 256 }
 
 [fmt]
 line_length = 120
