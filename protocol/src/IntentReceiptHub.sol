@@ -87,10 +87,16 @@ contract IntentReceiptHub is IIntentReceiptHub, Ownable, ReentrancyGuard, Pausab
     /// @notice ERC-8004 adapter for publishing credibility signals (optional)
     address public erc8004Adapter;
 
+    /// @notice Trusted hook addresses that can post receipts without solver signatures
+    mapping(address => bool) public trustedHooks;
+
     // ============ Events for ERC-8004 ============
 
     /// @notice Emitted when ERC-8004 adapter is updated
     event ERC8004AdapterUpdated(address indexed oldAdapter, address indexed newAdapter);
+
+    /// @notice Emitted when a trusted hook is added or removed
+    event TrustedHookUpdated(address indexed hook, bool trusted);
 
     // ============ Constructor ============
 
@@ -599,6 +605,97 @@ contract IntentReceiptHub is IIntentReceiptHub, Ownable, ReentrancyGuard, Pausab
 
         // Publish to ERC-8004 adapter if configured
         _publishToERC8004(receiptId, receipt.solverId, !solverFault, 0);
+    }
+
+    // ============ Trusted Hook Functions ============
+
+    /// @notice Set a trusted hook address
+    /// @param _hook Hook contract address
+    /// @param trusted Whether the hook is trusted
+    function setTrustedHook(address _hook, bool trusted) external onlyOwner {
+        trustedHooks[_hook] = trusted;
+        emit TrustedHookUpdated(_hook, trusted);
+    }
+
+    /// @notice Post a receipt from a trusted hook (no solver signature required)
+    /// @param receipt The receipt to post
+    /// @param declaredVolume The declared transaction volume
+    /// @return receiptId Unique receipt identifier
+    function postReceiptFromHook(Types.IntentReceipt calldata receipt, uint256 declaredVolume)
+        external
+        whenNotPaused
+        nonReentrant
+        returns (bytes32 receiptId)
+    {
+        require(trustedHooks[msg.sender], "Not a trusted hook");
+
+        // Validate solver exists and is active
+        Types.Solver memory solver = solverRegistry.getSolver(receipt.solverId);
+        if (solver.status != Types.SolverStatus.Active) revert InvalidSolver();
+
+        // Compute receipt ID
+        receiptId = computeReceiptId(receipt);
+
+        // Check for duplicates
+        if (_receipts[receiptId].createdAt != 0) revert ReceiptAlreadyExists();
+
+        // No nonce increment or signature verification for hook-posted receipts
+        // The hook is trusted and acts as the authorization mechanism
+
+        // Store receipt
+        _receipts[receiptId] = receipt;
+        _receiptStatus[receiptId] = Types.ReceiptStatus.Pending;
+        _receiptVolumes[receiptId] = declaredVolume;
+
+        // Index by solver and intent
+        _solverReceipts[receipt.solverId].push(receiptId);
+        _intentReceipts[receipt.intentHash].push(receiptId);
+
+        totalReceipts++;
+
+        emit ReceiptPosted(receiptId, receipt.intentHash, receipt.solverId, receipt.expiry);
+    }
+
+    /// @notice Open a dispute from a trusted hook (no challenger bond required)
+    /// @param receiptId Receipt to dispute
+    /// @param reason Dispute reason code
+    /// @param evidenceHash Evidence bundle hash
+    function openDisputeFromHook(bytes32 receiptId, Types.DisputeReason reason, bytes32 evidenceHash)
+        external
+        receiptExists(receiptId)
+        whenNotPaused
+        nonReentrant
+    {
+        require(trustedHooks[msg.sender], "Not a trusted hook");
+
+        Types.ReceiptStatus status = _receiptStatus[receiptId];
+        if (status != Types.ReceiptStatus.Pending) revert ReceiptNotPending();
+        if (reason == Types.DisputeReason.None) revert InvalidDisputeReason();
+
+        Types.IntentReceipt storage receipt = _receipts[receiptId];
+
+        // Lock solver bond
+        uint256 lockAmount = solverRegistry.getMinimumBond();
+        solverRegistry.lockBond(receipt.solverId, lockAmount);
+
+        // Create dispute (no challenger bond for hook-originated disputes)
+        _disputes[receiptId] = Types.Dispute({
+            receiptId: receiptId,
+            solverId: receipt.solverId,
+            challenger: msg.sender,
+            reason: reason,
+            evidenceHash: evidenceHash,
+            openedAt: uint64(block.timestamp),
+            deadline: uint64(block.timestamp + 24 hours),
+            resolved: false
+        });
+
+        _receiptStatus[receiptId] = Types.ReceiptStatus.Disputed;
+        totalDisputes++;
+
+        solverRegistry.incrementDisputes(receipt.solverId);
+
+        emit DisputeOpened(receiptId, receipt.solverId, msg.sender, reason);
     }
 
     // ============ ERC-8004 Integration ============
